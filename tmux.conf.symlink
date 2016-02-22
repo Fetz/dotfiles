@@ -3,62 +3,15 @@ set-option -g default-shell /bin/zsh
 
 # mouse support
 set -g mouse on
-# set-option -g -q mouse on
+set-option -g -q mouse on
 
-
-# bind-key -T root WheelUpPane \
-#   if-shell -Ft= '#{mouse_any_flag}' 'send-keys -M' \
-#   'if-shell -Ft= "#{pane_in_mode}" "send-keys -M" "copy-mode"'
-
-# bind-key -T root WheelDownPane \
-#   if-shell -Ft= '#{mouse_any_flag}' 'send-keys -M' \
-#   'if-shell -Ft= "#{pane_in_mode}" "send-keys -M"'
-
-# bind -n WheelUpPane if-shell -F -t = "#{mouse_any_flag}" "send-keys -M" "if -Ft= '#{pane_in_mode}' 'send-keys -M' 'select-pane -t=; copy-mode -e; send-keys -M'"
+bind -n WheelUpPane if-shell -F -t = "#{mouse_any_flag}" "send-keys -M" "if -Ft= '#{pane_in_mode}' 'send-keys -M' 'select-pane -t=; copy-mode -e; send-keys -M'"
 # bind -n WheelDownPane select-pane -t= \; send-keys -M
-
-# bind -n WheelUpPane if-shell -F -t = "#{mouse_any_flag}" "send-keys -M" "if -Ft= '#{pane_in_mode}' 'send-keys -M' 'select-pane -t=; copy-mode -e; send-keys -M'"
-# bind -n WheelDownPane select-pane -t= \; send-keys -M
-# bind -n C-WheelUpPane select-pane -t= \; copy-mode -e \; send-keys -M
-# bind -t vi-copy    C-WheelUpPane   halfpage-up
-# bind -t vi-copy    C-WheelDownPane halfpage-down
 # bind -t emacs-copy C-WheelUpPane   halfpage-up
 # bind -t emacs-copy C-WheelDownPane halfpage-down
 
-
-set-option -g -q mouse on
-bind-key -T root PPage if-shell -F "#{alternate_on}" "send-keys PPage" "copy-mode -e; send-keys PPage"
-bind-key -t vi-copy PPage page-up
-bind-key -t vi-copy NPage page-down
-
-# setw -g mode-mouse on
-# set -g mouse-select-pane on
-# set -g mouse-resize-pane on
-# set -g mouse-select-window on
-
-# Toggle mouse on
-# bind m \
-#     set -g mode-mouse on \;\
-#     set -g mouse-resize-pane on \;\
-#     set -g mouse-select-pane on \;\
-#     setw -g mouse-select-window on \;\
-#     display 'Mouse: ON'
-
-# Toggle mouse off
-# bind M \
-#     set -g mode-mouse off \;\
-#     set -g mouse-resize-pane off \;\
-#     set -g mouse-select-pane off \;\
-#     set -g mouse-select-window off \;\
-#     display 'Mouse: OFF'
-
 # set terminal colors
 set -g default-terminal "screen-256color"
-
-# set utf8
-# set -g utf8 on
-# set -g status-utf8 on
-# set-option -g status-utf8 on
 
 # copy mode
 #unbind [
