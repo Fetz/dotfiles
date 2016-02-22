@@ -1,0 +1,110 @@
+# set Zsh as your default Tmux shell
+set-option -g default-shell /bin/zsh
+
+# mouse support
+set -g mouse on
+# set-option -g -q mouse on
+
+
+# bind-key -T root WheelUpPane \
+#   if-shell -Ft= '#{mouse_any_flag}' 'send-keys -M' \
+#   'if-shell -Ft= "#{pane_in_mode}" "send-keys -M" "copy-mode"'
+
+# bind-key -T root WheelDownPane \
+#   if-shell -Ft= '#{mouse_any_flag}' 'send-keys -M' \
+#   'if-shell -Ft= "#{pane_in_mode}" "send-keys -M"'
+
+# bind -n WheelUpPane if-shell -F -t = "#{mouse_any_flag}" "send-keys -M" "if -Ft= '#{pane_in_mode}' 'send-keys -M' 'select-pane -t=; copy-mode -e; send-keys -M'"
+# bind -n WheelDownPane select-pane -t= \; send-keys -M
+
+# bind -n WheelUpPane if-shell -F -t = "#{mouse_any_flag}" "send-keys -M" "if -Ft= '#{pane_in_mode}' 'send-keys -M' 'select-pane -t=; copy-mode -e; send-keys -M'"
+# bind -n WheelDownPane select-pane -t= \; send-keys -M
+# bind -n C-WheelUpPane select-pane -t= \; copy-mode -e \; send-keys -M
+# bind -t vi-copy    C-WheelUpPane   halfpage-up
+# bind -t vi-copy    C-WheelDownPane halfpage-down
+# bind -t emacs-copy C-WheelUpPane   halfpage-up
+# bind -t emacs-copy C-WheelDownPane halfpage-down
+
+
+set-option -g -q mouse on
+bind-key -T root PPage if-shell -F "#{alternate_on}" "send-keys PPage" "copy-mode -e; send-keys PPage"
+bind-key -t vi-copy PPage page-up
+bind-key -t vi-copy NPage page-down
+
+# setw -g mode-mouse on
+# set -g mouse-select-pane on
+# set -g mouse-resize-pane on
+# set -g mouse-select-window on
+
+# Toggle mouse on
+# bind m \
+#     set -g mode-mouse on \;\
+#     set -g mouse-resize-pane on \;\
+#     set -g mouse-select-pane on \;\
+#     setw -g mouse-select-window on \;\
+#     display 'Mouse: ON'
+
+# Toggle mouse off
+# bind M \
+#     set -g mode-mouse off \;\
+#     set -g mouse-resize-pane off \;\
+#     set -g mouse-select-pane off \;\
+#     set -g mouse-select-window off \;\
+#     display 'Mouse: OFF'
+
+# set terminal colors
+set -g default-terminal "screen-256color"
+
+# set utf8
+# set -g utf8 on
+# set -g status-utf8 on
+# set-option -g status-utf8 on
+
+# copy mode
+#unbind [
+#bind Escape copy-mode
+#unbind ]
+bind ] paste-buffer
+
+# source config file
+bind r source-file ~/.tmux.conf \; display "Reloaded!"
+
+# change tmux prefix
+set -g prefix C-a
+unbind C-b
+set -sg escape-time 1
+bind C-a send-prefix
+
+# start with pane and window 1
+set -g base-index 1
+set -g pane-base-index 1
+
+# splitting panes
+bind | split-window -h
+bind - split-window -v
+
+# moving between panes
+bind -n C-h run "(tmux display-message -p '#{pane_current_command}' | grep -iq vim && tmux send-keys C-h) || tmux select-pane -L"
+bind -n C-j run "(tmux display-message -p '#{pane_current_command}' | grep -iq vim && tmux send-keys C-j) || tmux select-pane -D"
+bind -n C-k run "(tmux display-message -p '#{pane_current_command}' | grep -iq vim && tmux send-keys C-k) || tmux select-pane -U"
+bind -n C-l run "(tmux display-message -p '#{pane_current_command}' | grep -iq vim && tmux send-keys C-l) || tmux select-pane -R"
+bind -n C-\ run "(tmux display-message -p '#{pane_current_command}' | grep -iq vim && tmux send-keys 'C-\\') || tmux select-pane -l"
+# bind -n C-k send-keys -R \; send-keys C-l \; clear-history
+
+# Pane resizing
+bind -r H resize-pane -L 5
+bind -r J resize-pane -D 5
+bind -r K resize-pane -U 5
+bind -r L resize-pane -R 5
+
+# enable activity alerts
+setw -g monitor-activity on
+set -g visual-activity on
+
+# Status line
+set -g status-interval 60
+if-shell "test -f .theme_airline.tmux" "source .theme_airline.tmux"
+
+# override cmd+k
+# bind -n C-o send-keys -R \; clear-history
+bind -n C-o delete-buffer \; clear-history \; send-keys "clear" \; send-keys "Enter" \; delete-buffer \; clear-history
