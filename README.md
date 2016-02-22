@@ -15,8 +15,8 @@ inspired by dotfiles from:
 ## Installation
 
 ```shell
-$ cd ~;
-$ mkdir -p dotfiles; git clone git@github.com:Fetz/dotfiles.git dotfiles/fetz;
+$ cd ~
+$ mkdir -p dotfiles; git clone git@github.com:Fetz/dotfiles.git dotfiles/fetz
 $ sh dotfiles/fetz/bootstrap.sh
 ```
 
