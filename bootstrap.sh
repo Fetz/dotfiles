@@ -196,6 +196,15 @@ install_spaceemacs () {
   tic -o ~/.terminfo eterm-color.ti # fix emacs color terminal with zsh
 }
 
+install_vim () {
+  git clone https://github.com/VundleVim/Vundle.vim.git ~/.vim/bundle/Vundle.vim
+  curl -OL https://raw.githubusercontent.com/w0ng/vim-hybrid/master/colors/hybrid.vim
+  mkdir -p ~/.vim/colors/; mv hybrid.vim ~/.vim/colors/
+  mkdir -p ${XDG_CONFIG_HOME:=$HOME/.config}
+  ln -s ~/.vim $XDG_CONFIG_HOME/nvim
+  ln -s ~/.vimrc $XDG_CONFIG_HOME/nvim/init.vim
+}
+
 install_apps () {
   #
   # Homebrew
@@ -236,20 +245,8 @@ install_apps () {
   brew cask install skype
 
   # dev
-
-  # emacs
-  brew tap railwaycat/emacsmacport
-  brew cask install emacs-mac
-  brew install emacs
-  brew linkapps emacs
-  # vim
-  brew tap neovim/neovim
-  brew install --HEAD neovim
-  brew install vim
-
   brew cask install iterm2
   brew cask install virtualbox
-  brew cask install sublime-text
   brew cask install imagealpha
   brew cask install imageoptim
   brew cask install sourcetree
@@ -319,6 +316,20 @@ install_apps () {
   brew cask install java
   brew install leiningen
   # curl -L http://smartcd.org/install | bash
+
+  # editors
+  brew cask install sublime-text
+
+  # emacs
+  brew tap railwaycat/emacsmacport
+  brew cask install emacs-mac
+  brew install emacs
+  brew linkapps emacs
+
+  # vim
+  brew tap neovim/neovim
+  brew install --HEAD neovim
+  brew install vim
 
   # Remove outdated versions from the cellar
   brew cleanup
