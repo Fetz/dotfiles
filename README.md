@@ -22,6 +22,6 @@ $ sh dotfiles/fetz/bootstrap.sh
 
 Use at your own risk!
 
-License
+## License
 
 FETZ's dotfiles is licensed under the [MIT License](LICENSE).
