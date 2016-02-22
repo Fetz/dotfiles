@@ -5,10 +5,11 @@ inspired by dotfiles from:
 - and probably others
 
 ## What's inside
-- vim/nvim dotfile
+- vim/neovim dotfile
 - tmux and theme_airline
 - spacemacs dotfile
 - zsh (pretzo)
+- Amethyst tiling window manager ala xmonad and i3
 - brew/cask to install some apps and libs needed
 
 ## Installation
