@@ -2,6 +2,8 @@
 #
 # bootstrap installs things.
 
+# heavily inspired (copy pasted) https://github.com/holman/dotfiles/blob/master/script/bootstrap
+
 cd "$(dirname "$0")"
 DOTFILES_ROOT="$(pwd -P)/.."
 
@@ -36,6 +38,22 @@ print_result () {
       && exit
 }
 
+git_clone() {
+    REPOSRC=$1
+    LOCALREPO=$2
+
+    # We do it this way so that we can abstract if from just git later on
+    LOCALREPO_VC_DIR=$LOCALREPO/.git
+
+    if [ ! -d $LOCALREPO_VC_DIR ]
+    then
+        git clone --recursive $REPOSRC $LOCALREPO
+    else
+        cd $LOCALREPO
+        git pull $REPOSRC
+    fi
+}
+
 link_file () {
   local src=$1 dst=$2
 
@@ -49,6 +67,7 @@ link_file () {
     then
 
       local currentSrc="$(readlink $dst)"
+
 
       if [ "$currentSrc" == "$src" ]
       then
@@ -79,6 +98,10 @@ link_file () {
         esac
 
       fi
+
+    else
+
+      skip=true;
 
     fi
 
@@ -145,7 +168,7 @@ setup_xcode () {
 }
 
 setup_gitconfig () {
-  if ! [ -f git/gitconfig.symlink ]
+  if ! [ -f gitconfig.symlink ]
   then
     info 'setup gitconfig'
 
@@ -155,11 +178,11 @@ setup_gitconfig () {
       credential='osxkeychain'
     fi
 
-    user ' - What is your github author name?'
+    user ' - What is your git author name?'
     read -e authorname
-    user ' - What is your github author email?'
+    user ' - What is your git author email?'
     read -e authoremail
-    user ' - What is your github author editor?'
+    user ' - What is your git editor?'
     read -e editor
 
     sed -e "s/AUTHORNAME/$authorname/g" -e "s/AUTHOREMAIL/$authoremail/g" -e "s/CREDENTIAL_HELPER/$credential/g" -e "s/EDITOR/$editor/g" gitconfig.symlink.example > gitconfig.symlink
@@ -191,21 +214,32 @@ install_dotfiles () {
   done
 }
 
-install_spaceemacs () {
-  git clone https://github.com/syl20bnr/spacemacs ~/.emacs.d
-  tic -o ~/.terminfo eterm-color.ti # fix emacs color terminal with zsh
+setup_spaceemacs () {
+  info 'setting up spacemacs...'
+
+  tic -o ~/.terminfo emacs/eterm-color.ti # fix emacs color terminal with zsh
+  git_clone https://github.com/syl20bnr/spacemacs ~/.emacs.d
 }
 
-install_vim () {
-  git clone https://github.com/VundleVim/Vundle.vim.git ~/.vim/bundle/Vundle.vim
-  curl -OL https://raw.githubusercontent.com/w0ng/vim-hybrid/master/colors/hybrid.vim
-  mkdir -p ~/.vim/colors/; mv hybrid.vim ~/.vim/colors/
+setup_vim () {
+  info 'setting up vim...'
+
+  git_clone https://github.com/VundleVim/Vundle.vim.git ~/.vim/bundle/Vundle.vim
+
+  if ! [ -f ~/.vim/colors/hybrid.vim ]
+  then
+    curl -OL https://raw.githubusercontent.com/w0ng/vim-hybrid/master/colors/hybrid.vim
+    mkdir -p ~/.vim/colors/; mv hybrid.vim ~/.vim/colors/
+  fi
+
   mkdir -p ${XDG_CONFIG_HOME:=$HOME/.config}
-  ln -s ~/.vim $XDG_CONFIG_HOME/nvim
-  ln -s ~/.vimrc $XDG_CONFIG_HOME/nvim/init.vim
+
+  link_file ~/.vim "$XDG_CONFIG_HOME/nvim"
+  link_file ~/.vimrc "$XDG_CONFIG_HOME/nvim/init.vim"
 }
 
 install_apps () {
+  info 'installing apps...'
   #
   # Homebrew
   #
@@ -250,9 +284,12 @@ install_apps () {
   brew cask install imagealpha
   brew cask install imageoptim
   brew cask install sourcetree
+  brew cask install hipchat
+  brew cask install robomongo
+
 
   # browsers
-  brew cask install google
+  brew cask install google-chrome
   brew cask install google-chrome-canary
   brew cask install firefoxdeveloperedition
   brew cask install firefox
@@ -283,20 +320,17 @@ install_apps () {
   brew install jq
   brew install zsh
 
-  # install prezto
-  git clone --recursive https://github.com/Fetz/prezto.git "${ZDOTDIR:-$HOME}/.zprezto"
-  # run this
-  # setopt EXTENDED_GLOB
-  # for rcfile in "${ZDOTDIR:-$HOME}"/.zprezto/runcoms/^README.md(.N); do
-  #   ln -s "$rcfile" "${ZDOTDIR:-$HOME}/.${rcfile:t}"
-  # done
   brew install tree
   brew install todo-txt
-  
+
   # install tmux
   brew install tmux
-  curl -OL https://raw.github.com/richo/battery/master/bin/battery; mkdir -p bin/; mv battery bin/battery; chmod +x bin/battery;
-  
+
+  if ! [ -f bin/battery ]
+  then
+    curl -OL https://raw.github.com/richo/battery/master/bin/battery; mkdir -p bin/; mv battery bin/battery; chmod +x bin/battery;
+  fi
+
   # install improve search
   brew install the_platinum_searcher
   brew install the_silver_searcher
@@ -305,13 +339,13 @@ install_apps () {
   brew install python
   brew install python3
   brew install lua
-  
+
   # install nodejs
   brew install nvm
   export NVM_DIR=~/.nvm
   . $(brew --prefix nvm)/nvm.sh
   nvm install node
-  
+
   # Install clojure
   brew cask install java
   brew install leiningen
@@ -336,7 +370,18 @@ install_apps () {
 
 }
 
-set_zsh () {
+setup_zsh () {
+  # install prezto
+
+  info 'setup zprezto'
+  git_clone https://github.com/Fetz/prezto.git "${ZDOTDIR:-$HOME}/.zprezto"
+
+  for src in $(find "${ZDOTDIR:-$HOME}/.zprezto/runcoms" -type f ! -name '*.md')
+  do
+      file=$(basename $src)
+      link_file "$src" "${ZDOTDIR:-$HOME}/.${file:t}"
+  done
+
   echo 'change default shell to zsh'
   chsh -s /bin/zsh
 }
@@ -345,5 +390,6 @@ setup_xcode
 setup_gitconfig
 install_apps
 install_dotfiles
-install_spaceemacs
-set_zsh
+setup_spaceemacs
+setup_vim
+setup_zsh
