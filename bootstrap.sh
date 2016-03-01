@@ -11,6 +11,10 @@ set -e
 
 echo ''
 
+pause(){
+  read -n1 -rsp $'Press any key to continue or Ctrl+C to exit...\n'
+}
+
 info () {
   printf "\r  [ \033[00;34m..\033[0m ] $1\n"
 }
@@ -187,16 +191,21 @@ setup_gitconfig () {
 
     sed -e "s/AUTHORNAME/$authorname/g" -e "s/AUTHOREMAIL/$authoremail/g" -e "s/CREDENTIAL_HELPER/$credential/g" -e "s/EDITOR/$editor/g" gitconfig.symlink.example > gitconfig.symlink
 
-    echo 'allow to use ssh with github'
+    info 'allow to use ssh with github'
     ssh-keygen -t rsa -b 4096 -C $authoremail
     ssh-add ~/.ssh/id_rsa
     pbcopy < ~/.ssh/id_rsa.pub
 
-    echo 'public key is in clipboard, add ssh key to github'
+    info 'public key is in clipboard, add ssh key to github'
     open https://github.com/settings/ssh
+    pause
 
-    echo 'generate token if you prefer to use https'
+    info 'generate token if you prefer to use https'
+
     open https://github.com/settings/tokens
+    info 'please check https://help.github.com/articles/creating-an-access-token-for-command-line-use/'
+    info "and this https://help.github.com/articles/caching-your-github-password-in-git/ if you don't know or remember what to do with the token"
+    pause
 
     success 'gitconfig'
   fi
