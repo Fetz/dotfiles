@@ -331,9 +331,11 @@ install_apps () {
 
   brew install tree
   brew install todo-txt
+  brew install fpp;
 
   # install tmux
   brew install tmux
+  git_clone https://github.com/tmux-plugins/tpm ~/.tmux/plugins/tpm # install tmux plugin
 
   if ! [ -f bin/battery ]
   then
@@ -350,9 +352,8 @@ install_apps () {
   brew install lua
 
   # install nodejs
-  brew install nvm
+  curl -o- https://raw.githubusercontent.com/creationix/nvm/v0.31.0/install.sh | bash
   export NVM_DIR=~/.nvm
-  . $(brew --prefix nvm)/nvm.sh
   nvm install node
 
   # Install clojure

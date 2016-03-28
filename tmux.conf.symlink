@@ -10,22 +10,19 @@ bind -n WheelUpPane if-shell -F -t = "#{mouse_any_flag}" "send-keys -M" "if -Ft=
 # bind -t emacs-copy C-WheelUpPane   halfpage-up
 # bind -t emacs-copy C-WheelDownPane halfpage-down
 
-# set terminal colors
-set -g default-terminal "screen-256color"
-
 # copy mode
 #unbind [
 #bind Escape copy-mode
 #unbind ]
-bind ] paste-buffer
+# bind ] paste-buffer
 
 # source config file
-bind r source-file ~/.tmux.conf \; display "Reloaded!"
+# sensible gives this for free
+# bind r source-file ~/.tmux.conf \; display "Reloaded!"
 
 # change tmux prefix
 set -g prefix C-a
 unbind C-b
-set -sg escape-time 1
 bind C-a send-prefix
 
 # start with pane and window 1
@@ -55,9 +52,19 @@ setw -g monitor-activity on
 set -g visual-activity on
 
 # Status line
-set -g status-interval 60
+# set -g status-interval 60 check if is ok with smaller
 if-shell "test -f .theme_airline.tmux" "source .theme_airline.tmux"
 
 # override cmd+k
 # bind -n C-o send-keys -R \; clear-history
 bind -n C-o delete-buffer \; clear-history \; send-keys "clear" \; send-keys "Enter" \; delete-buffer \; clear-history
+
+# use tmux plugins
+set -g @plugin 'tmux-plugins/tpm'
+set -g @plugin 'tmux-plugins/tmux-sensible'
+set -g @plugin 'tmux-plugins/tmux-yank'
+set -g @plugin 'tmux-plugins/tmux-copycat'
+set -g @plugin 'tmux-plugins/tmux-sessionist'
+
+# Initialize TMUX plugin manager (keep this line at the very bottom of tmux.conf)
+run '~/.tmux/plugins/tpm/tpm'

@@ -7,12 +7,18 @@ inspired by dotfiles from:
 
 ## What's inside
 - setup git to use both ssh and https github token
+- brew/cask to install some apps and libs needed
 - vim/neovim dotfile and setup vundle
-- tmux and theme_airline
+- tmux
+  - theme_airline
+  - tmux plugin
+    - fpp
+    - yank
+    - copycat
+    - sensible
 - spacemacs dotfile
 - zsh (pretzo)
 - Amethyst tiling window manager ala xmonad and i3
-- brew/cask to install some apps and libs needed
 
 ## Installation
 
