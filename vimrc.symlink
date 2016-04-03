@@ -183,15 +183,15 @@ Plugin 'terryma/vim-expand-region'
 Plugin 'godlygeek/tabular'
 "Plugin 'ashisha/image.vim'
 Plugin 'gabesoft/vim-ags'
-if !has('nvim')
-    Plugin 'jszakmeister/vim-togglecursor'
-endif
 Plugin 'nathanaelkane/vim-indent-guides'
 " Plugin 'Raimondi/delimitMate'
 Plugin 'jiangmiao/auto-pairs'
-" Plugin 'Shougo/neocomplete.vim'
 Plugin 'airblade/vim-gitgutter'
 Plugin 'editorconfig/editorconfig-vim'
+if !has('nvim')
+    Plugin 'tmux-plugins/vim-tmux-focus-events'
+    Plugin 'jszakmeister/vim-togglecursor'
+endif
 
 " web dev
 Plugin 'mattn/emmet-vim'

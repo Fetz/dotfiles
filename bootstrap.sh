@@ -337,11 +337,6 @@ install_apps () {
   brew install tmux
   git_clone https://github.com/tmux-plugins/tpm ~/.tmux/plugins/tpm # install tmux plugin
 
-  if ! [ -f bin/battery ]
-  then
-    curl -OL https://raw.github.com/richo/battery/master/bin/battery; mkdir -p bin/; mv battery bin/battery; chmod +x bin/battery;
-  fi
-
   # install improve search
   brew install the_platinum_searcher
   brew install the_silver_searcher
