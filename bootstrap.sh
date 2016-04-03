@@ -375,6 +375,8 @@ install_apps () {
   brew install --HEAD neovim
   brew install vim
 
+  setup_karabiner
+
   # Remove outdated versions from the cellar
   brew cleanup
 
@@ -394,6 +396,20 @@ setup_zsh () {
 
   echo 'change default shell to zsh'
   chsh -s /bin/zsh
+}
+
+setup_karabiner () {
+  info 'setup karabiner'
+
+  # karabiner
+  brew cask install karabiner
+  brew cask install seil
+
+  local overwrite_all=true backup_all=false skip_all=false
+  link_file karabiner/private.xml /Applications/Karabiner.app/Contents/Resources/private.xml
+
+  info 'change key 80 in seils'
+  open 'https://pqrs.org/osx/karabiner/faq.html.en#exchange-caps-lock-and-delete'
 }
 
 setup_xcode
