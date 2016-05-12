@@ -288,7 +288,8 @@ install_apps () {
   brew cask install skype
 
   # dev
-  brew cask install iterm2
+  brew cask install iterm2-nightly
+  # brew cask install iterm2
   brew cask install virtualbox
   brew cask install imagealpha
   brew cask install imageoptim
@@ -334,7 +335,9 @@ install_apps () {
   brew install fpp;
 
   # install tmux
-  brew install tmux
+  # temporary until tmux mac with true color
+  brew install https://raw.githubusercontent.com/choppsv1/homebrew-term24/master/tmux.rb
+  # brew install tmux
   git_clone https://github.com/tmux-plugins/tpm ~/.tmux/plugins/tpm # install tmux plugin
 
   # install improve search

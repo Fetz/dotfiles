@@ -1,3 +1,16 @@
+"
+"   ▓█████▒▓█████▓▄▄█████▓▒███████▒
+"  ▓██   ▒ ▓█   ▀▓  ██▒ ▓▒▒ ▒ ▒ ▄▀░
+"  ▒████ ░ ▒███  ▒ ▓██░ ▒░░ ▒ ▄▀▒░
+"  ░▓█▒  ░ ▒▓█  ▄░ ▓██▓ ░   ▄▀▒   ░
+"  ░▒█░    ░▒████▒ ▒██▒ ░ ▒███████▒
+"   ▒ ░    ░░ ▒░ ░ ▒ ░░   ░▒▒ ▓░▒░▒
+"   ░       ░ ░  ░   ░    ░░▒ ▒ ░ ▒
+"   ░ ░       ░    ░      ░ ░ ░ ░ ░
+"             ░  ░          ░ ░
+"                         ░
+"
+
 set nocompatible              " be iMproved, required
 filetype off                  " required
 
@@ -16,7 +29,7 @@ set cursorline          " highlight current line
 set ruler               " always show cursor
 set guioptions-=T       " hide the toolbar
 set nofoldenable        " disable folding because it is evil
-set nowrap              " turn word wrap off
+" set nowrap              " turn word wrap off
 set shell=/bin/bash
 
 " set the status line to something useful
@@ -37,8 +50,10 @@ if has('mouse')
 endif
 
 if has('nvim')
+    let $NVIM_TUI_ENABLE_TRUE_COLOR=1
     let $NVIM_TUI_ENABLE_CURSOR_SHAPE=1
     let g:python_host_prog='/usr/local/bin/python'
+    let g:python3_host_prog = '/usr/local/bin/python3'
 endif
 
 " scroll with more context
@@ -46,7 +61,7 @@ set scrolloff=10
 
 " code style
 set expandtab     " convert tabs to spaces
-set tabstop=4     " set tab size
+set tabstop=2     " set tab size
 set shiftwidth=4  " the number of spaces inserted for a tab
 set softtabstop=4 " number of spaces in tab when editing
 
@@ -67,11 +82,6 @@ set fileencoding=utf-8
 set splitbelow
 set splitright
 
-set background=dark
-colorscheme hybrid
-let g:hybrid_use_iTerm_colors = 1
-hi Conceal guibg=Black guifg=DarkMagenta
-
 set nobackup
 set nowritebackup
 set noswapfile
@@ -89,26 +99,20 @@ let g:mapleader = " "
 " will insert tab at beginning of line,
 " will use completion if not at beginning
 set wildmode=list:longest,list:full
-function! InsertTabWrapper()
-    let col = col('.') - 1
-    if !col || getline('.')[col - 1] !~ '\k'
-        return "\<tab>"
-    else
-        return "\<c-p>"
-    endif
-endfunction
-inoremap <Tab> <c-r>=InsertTabWrapper()<cr>
+" function! InsertTabWrapper()
+"     let col = col('.') - 1
+"     if !col || getline('.')[col - 1] !~ '\k'
+"         return "\<tab>"
+"     else
+"         return "\<c-p>"
+"     endif
+" endfunction
+" inoremap <Tab> <c-r>=InsertTabWrapper()<cr>
 
 " make shift+tab and tab indent
 vmap <Tab> >gv
 vmap <S-Tab> <gv
 imap <S-Tab> <C-o><<
-
-" Get off my lawn
-nnoremap <Left> :echoe "Use h"<CR>
-nnoremap <Right> :echoe "Use l"<CR>
-nnoremap <Up> :echoe "Use k"<CR>
-nnoremap <Down> :echoe "Use j"<CR>
 
 " Quicker window movement
 nnoremap <C-j> <C-w>j
@@ -125,9 +129,6 @@ nnoremap K :grep! "\b<C-R><C-W>\b"<CR>:cw<CR>
 
 " bind \ (backward slash) to grep shortcut
 nnoremap \ :Ags<SPACE>
-
-" Visual mode
-nmap <Leader>v V
 
 " ----------------------------------------------------------------
 " HISTORY & SEARCH
@@ -158,73 +159,153 @@ command -nargs=+ -complete=file -bar Ag silent! grep! <args>|cwindow|redraw!
 " PLugins
 " ----------------------------------------------------------------
 
-" set the runtime path to include Vundle and initialize
-set rtp+=~/.vim/bundle/Vundle.vim
-call vundle#begin()
-" alternatively, pass a path where Vundle should install plugins
-"call vundle#begin('~/some/path/here')
+let s:use_deoplete        = 1 && has('nvim') && has('python3')
+let s:use_neocomplete     = s:use_deoplete && has('lua')
 
-" let Vundle manage Vundle, required
-Plugin 'gmarik/Vundle.vim'
+" Load vim-plug
+if empty(glob("~/.vim/autoload/plug.vim"))
+    execute '!mkdir ~/.vim/autoload/'
+    execute '!curl -fLo ~/.vim/autoload/plug.vim https://raw.github.com/junegunn/vim-plug/master/plug.vim'
+endif
+
+
+" set the runtime path to include Vundle and initialize
+" set rtp+=~/.vim/bundle/Vundle.vim
+" call vundle#begin()
+call plug#begin('~/.vim/plugged')
 
 " start plugin definition
-Plugin 'scrooloose/nerdtree'
-Plugin 'kien/ctrlp.vim'
-Plugin 'tpope/vim-fugitive'
-Plugin 'tpope/vim-surround'
-Plugin 'tpope/vim-repeat'
-Plugin 'tpope/vim-commentary.git'
-Plugin 'bling/vim-airline'
-Plugin 'christoomey/vim-tmux-navigator'
-Plugin 'jistr/vim-nerdtree-tabs'
-Plugin 'Lokaltog/vim-easymotion'
-Plugin 'terryma/vim-multiple-cursors'
-Plugin 'terryma/vim-expand-region'
-Plugin 'godlygeek/tabular'
-"Plugin 'ashisha/image.vim'
-Plugin 'gabesoft/vim-ags'
-Plugin 'nathanaelkane/vim-indent-guides'
-" Plugin 'Raimondi/delimitMate'
-Plugin 'jiangmiao/auto-pairs'
-Plugin 'airblade/vim-gitgutter'
-Plugin 'editorconfig/editorconfig-vim'
-if !has('nvim')
-    Plugin 'tmux-plugins/vim-tmux-focus-events'
-    Plugin 'jszakmeister/vim-togglecursor'
+if s:use_neocomplete
+    Plug 'Shougo/neocomplete.vim'
+elseif s:use_deoplete
+    function! DoRemote(arg)
+        UpdateRemotePlugins
+    endfunction
+    Plug 'Shougo/deoplete.nvim', { 'do': function('DoRemote') }
+endif
+
+let g:has_completion =
+        \ exists("g:plugs['neocomplete.vim']")
+        \ || exists("g:plugs['deoplete.nvim']")
+
+if g:has_completion
+    " Mixed-filetype completion for Shougo complete, e.g. highlight JS within
+    " Markdown fenced code blocks.
+    Plug 'Shougo/context_filetype.vim'
+
+    " Include completion
+    Plug 'Shougo/neoinclude.vim'
+
+    Plug 'Shougo/neosnippet'
+                \| Plug 'honza/vim-snippets'
+                \| Plug 'Shougo/neosnippet-snippets'
+endif
+
+Plug 'scrooloose/nerdtree', { 'on':  'NERDTreeToggle' }
+" <Plug> to not move on * search function
+Plug 'haya14busa/vim-asterisk'
+Plug 'kien/ctrlp.vim'
+Plug 'tpope/vim-fugitive'
+Plug 'tpope/vim-surround'
+Plug 'tpope/vim-repeat'
+" Plug 'tpope/vim-commentary.git'
+Plug 'tomtom/tcomment_vim'
+Plug 'bling/vim-airline'
+Plug 'jistr/vim-nerdtree-tabs'
+Plug 'Lokaltog/vim-easymotion'
+Plug 'terryma/vim-multiple-cursors'
+Plug 'terryma/vim-expand-region'
+Plug 'osyo-manga/vim-over'
+Plug 'godlygeek/tabular', { 'on': ['Tabularize'] }
+Plug 'gabesoft/vim-ags'
+Plug 'nathanaelkane/vim-indent-guides'
+" Plug 'Raimondi/delimitMate'
+" Plug 'jiangmiao/auto-pairs'
+Plug 'airblade/vim-gitgutter'
+Plug 'editorconfig/editorconfig-vim'
+Plug 'tmux-plugins/vim-tmux'
+Plug 'christoomey/vim-tmux-navigator'
+Plug 'jeetsukumaran/vim-buffergator'
+
+" which key / guide key in vim
+Plug 'hecal3/vim-leader-guide'
+
+" add gS to smart split lines like comma lists and html tags
+Plug 'AndrewRadev/splitjoin.vim'
+
+if has('nvim')
+    Plug 'morhetz/gruvbox'
+else
+    Plug 'tmux-plugins/vim-tmux-focus-events'
+    Plug 'jszakmeister/vim-togglecursor'
 endif
 
 " web dev
-Plugin 'mattn/emmet-vim'
-Plugin 'cakebaker/scss-syntax.vim'
-Plugin 'plasticboy/vim-markdown'
+Plug 'mattn/emmet-vim'
+Plug 'ingydotnet/yaml-vim', { 'for': 'yaml' }
+Plug 'plasticboy/vim-markdown', { 'for': 'markdown' }
+Plug 'benekastah/neomake'
 " Plugin 'jaxbot/semantic-highlight.vim'
-Plugin 'jelera/vim-javascript-syntax'
-Plugin 'pangloss/vim-javascript'
-" Plugin 'sheerun/vim-polyglot'
-Plugin 'heavenshell/vim-jsdoc'
-Plugin 'vim-scripts/Flex-4'
-" Plugin 'marijnh/tern_for_vim'
+" Plug 'vim-scripts/Flex-4'
 
+" ========================================================================
+" Language: HTML, XML, and generators: mustache, handlebars
+" ========================================================================
+
+Plug 'othree/html5.vim'
+Plug 'mustache/vim-mustache-handlebars'
+Plug 'davidosomething/syntastic-hbstidy'
+
+" ========================================================================
+" Language: SCSS
+" ========================================================================
+Plug 'JulesWang/css.vim'
+        \| Plug 'hail2u/vim-css3-syntax'
+        \| Plug 'cakebaker/scss-syntax.vim'
+Plug 'othree/csscomplete.vim'
+
+" ========================================================================
+" Language: JavaScript / ES.NEXT / JSON
+" ========================================================================
+Plug 'elzr/vim-json'
+" detect extensionless node scripts (executables) via shebang
+" and add gf for going to node_modules files
+Plug 'othree/yajs.vim', { 'for': 'javascript' }
+Plug 'gavocanov/vim-js-indent', { 'for': 'javascript' }
+Plug 'moll/vim-node'
+Plug 'othree/javascript-libraries-syntax.vim'
+Plug 'othree/es.next.syntax.vim'
+Plug 'mxw/vim-jsx'
+Plug '1995eaton/vim-better-javascript-completion'
+
+Plug 'marijnh/tern_for_vim', { 'do': 'npm install' }
+Plug 'carlitux/deoplete-ternjs'
+Plug 'heavenshell/vim-jsdoc'
+Plug 'othree/jspc.vim'
 
 " All of your Plugins must be added before the following line
-call vundle#end()            " required
+call plug#end()
+
 " turn on syntax highlighting when not in vimdiff mode
-if !&diff
-	syntax on
-endif
+" if !&diff
+" 	syntax on
+" endif
 filetype plugin indent on    " required
 
-" To ignore plugin indent changes, instead use:
-"filetype plugin on
-"
-" Brief help
-" :PluginList       - lists configured plugins
-" :PluginInstall    - installs plugins; append `!` to update or just :PluginUpdate
-" :PluginSearch foo - searches for foo; append `!` to refresh local cache
-" :PluginClean      - confirms removal of unused plugins; append `!` to auto-approve removal
-"
-" see :h vundle for more details or wiki for FAQ
-" Put your non-Plugin stuff after this line
+
+" ========================================================================
+" SET THEME
+" ========================================================================
+
+set background=dark
+if has('nvim')
+    let g:gruvbox_italic=1
+    colorscheme gruvbox
+else
+    colorscheme hybrid
+    let g:hybrid_use_iTerm_colors = 1
+    hi Conceal guibg=Black guifg=DarkMagenta
+endif
 
 " remove whitespace on save
 autocmd BufWritePre * :%s/\s\+$//e
@@ -251,35 +332,6 @@ if executable('ag')
   let g:ctrlp_use_caching = 0
 endif
 
-" ----------------------------------------------------------------
-" Easy Motion
-" ----------------------------------------------------------------
-let g:EasyMotion_do_mapping = 0 " Disable default mappings
-
-" Bi-directional find motion
-" Jump to anywhere you want with minimal keystrokes, with just one key binding.
-" `s{char}{label}`
-nmap <Leader>s <Plug>(easymotion-s)
-
-" `s{char}{char}{label}`
-" Need one more keystroke, but on average, it may be more comfortable.
-nmap <Leader>S <Plug>(easymotion-s2)
-
-" Bidirectional & within line 't' motion
-omap <Leader>t <Plug>(easymotion-bd-tl)
-
-"incremental search
-nmap / <Plug>(easymotion-sn)
-xmap / <Esc><Plug>(easymotion-sn)\v%V
-omap / <Plug>(easymotion-tn)
-nnoremap g/ /
-
-" Turn on case sensitive feature
-let g:EasyMotion_smartcase = 1
-
-" JK motions: Line motions
-map <Leader>j <Plug>(easymotion-j)
-map <Leader>k <Plug>(easymotion-k)
 
 " expand region
 vmap v <Plug>(expand_region_expand)
@@ -290,17 +342,9 @@ set laststatus=2
 let g:airline_powerline_fonts = 1
 let g:airline#extensions#tabline#enabled = 1
 
-" start NERDTree on start-up and focus active window
-if !&diff
-	autocmd VimEnter * NERDTree
-    autocmd BufEnter * NERDTreeMirror
-	autocmd VimEnter * wincmd p
-endif
-
-" Set NerdTree to be visible in tabs
-let g:nerdtree_tabs_open_on_new_tab = 1
+" NERDTree
 let g:nerdtree_tabs_autofind = 1
-
+" map <Leader>pt :NERDTreeToggle<CR>
 
 " configure indent plugin
 let g:indent_guides_exclude_filetypes = ['help', 'nerdtree']
@@ -309,48 +353,172 @@ let g:indent_guides_enable_on_vim_startup = 1
 " configure gitgutter
 let g:gitgutter_eager = 0
 
+" configure neomake
+if executable('npm')
+    if !executable('eslint')
+        execute '!npm install -g eslint babel-eslint eslint-plugin-import eslint-plugin-react eslint-plugin-jsx-a11y eslint-config-airbnb;'
+    endif
+    let g:neomake_javascript_enabled_makers = ['eslint']
+endif
+
+" javascript libraries syntax
+let g:used_javascript_libs = 'jquery,underscore,lodash,react,flux,chai,sinon,gulp'
 
 " configure vim-jsdoc
 let g:jsdoc_default_mapping = 0
 let g:jsdoc_underscore_private = 1
-nmap <Leader>c :JsDoc<CR>
 
+" configure jsx
+let g:jsx_ext_required = 0
 
 " configure as3
-autocmd BufRead *.as set filetype=actionscript
-autocmd BufRead *.mxml set filetype=mxml
+" autocmd BufRead *.as set filetype=actionscript
+" autocmd BufRead *.mxml set filetype=mxml
 
-" configure weird es6
-au BufNewFile,BufRead *.es6 setf javascript
+" deoplete
+if (exists("g:plugs['deoplete.nvim']"))
 
-" configure neocomplete
-" let g:neocomplete#enable_at_startup = 1
-" let g:neocomplete#enable_smart_case = 1
-" let g:neosnippet#expand_word_boundary = 1
-" let g:neocomplete#sources#syntax#min_keyword_length = 3
-" let g:neocomplete#lock_buffer_name_pattern = '\*ku\*'
-" Recommended key-mappings.
-" <CR>: close popup and save indent.
-" inoremap <silent> <CR> <C-r>=<SID>my_cr_function()<CR>
-" function! s:my_cr_function()
-"  return neocomplete#close_popup() . "\<CR>"
-  " For no inserting <CR> key.
-  "return pumvisible() ? neocomplete#close_popup() : "\<CR>"
-" endfunction
-" <TAB>: completion.
-" inoremap <expr><TAB>  pumvisible() ? "\<C-n>" : "\<TAB>"
-" <C-h>, <BS>: close popup and delete backword char.
-" inoremap <expr><C-h> neocomplete#smart_close_popup()."\<C-h>"
-" inoremap <expr><BS> neocomplete#smart_close_popup()."\<C-h>"
-" inoremap <expr><C-y>  neocomplete#close_popup()
-" inoremap <expr><C-e>  neocomplete#cancel_popup()
+    let g:deoplete#enable_at_startup = 1
+    let g:deoplete#disable_auto_complete = 0
+    let g:deoplete#file#enable_buffer_path = 1
+    let g:deoplete#keyword_patterns = {}
+    let g:deoplete#keyword_patterns.clojure = '[\w!$%&*+/:<=>?@\^_~\-\.]*'
 
-" Enable omni completion.
-" autocmd FileType css setlocal omnifunc=csscomplete#CompleteCSS
-" autocmd FileType html,markdown setlocal omnifunc=htmlcomplete#CompleteTags
-" autocmd FileType javascript setlocal omnifunc=javascriptcomplete#CompleteJS
-" autocmd FileType python setlocal omnifunc=pythoncomplete#Complete
-" autocmd FileType xml setlocal omnifunc=xmlcomplete#CompleteTags
+    autocmd InsertLeave,CompleteDone * if pumvisible() == 0 | pclose | endif
+    " if !exists('g:deoplete#omni#input_patterns')
+    "     let g:deoplete#omni#input_patterns = {}
+    " endif
+    " let g:tern_request_timeout = 3
+    " let g:tern_request_timeout = 0.4
+
+    " completion
+    augroup omnifuncs
+        autocmd!
+        autocmd FileType css setlocal omnifunc=csscomplete#CompleteCSS
+        autocmd FileType html,markdown setlocal omnifunc=htmlcomplete#CompleteTags
+        autocmd FileType javascript setlocal omnifunc=javascriptcomplete#CompleteJS
+        autocmd FileType python setlocal omnifunc=pythoncomplete#Complete
+        autocmd FileType xml setlocal omnifunc=xmlcomplete#CompleteTags
+    augroup end
+
+    " tern
+    if exists('g:plugs["tern_for_vim"]')
+        let g:tern_show_argument_hints = 'on_hold'
+        let g:tern_show_signature_in_pum = 1
+
+        autocmd FileType javascript setlocal omnifunc=tern#Complete
+    endif
+
+    " deoplete tab-complete
+    inoremap <silent><expr> <Tab> pumvisible() ? "\<C-n>" : deoplete#mappings#manual_complete()
+    " ,<Tab> for regular tab
+    inoremap <Leader><Tab> <Space><Space>
+endif
+
+" buffergator
+let g:buffergator_suppress_keymaps = 1 " Disable default mappings
+
+" ----------------------------------------------------------------
+" Easy Motion
+" ----------------------------------------------------------------
+let g:EasyMotion_do_mapping = 0 " Disable default mappings
+
+"incremental search
+nmap / <Plug>(easymotion-sn)
+xmap / <Esc><Plug>(easymotion-sn)\v%V
+omap / <Plug>(easymotion-tn)
+nnoremap g/ /
+
+" Turn on case sensitive feature
+let g:EasyMotion_smartcase = 1
+
+" ----------------------------------------------------------------
+" Leader guide config
+" ----------------------------------------------------------------
+function! s:my_displayfunc()
+    let g:leaderGuide#displayname =
+                \ substitute(g:leaderGuide#displayname, '\c<cr>$', '', '')
+    let g:leaderGuide#displayname =
+        \ substitute(g:leaderGuide#displayname, '^<Plug>', '', '')
+    let g:leaderGuide#displayname =
+        \ substitute(g:leaderGuide#displayname, '^<C-w>j', 'down', '')
+    let g:leaderGuide#displayname =
+        \ substitute(g:leaderGuide#displayname, '^<C-w>k', 'up', '')
+    let g:leaderGuide#displayname =
+        \ substitute(g:leaderGuide#displayname, '^<C-w>h', 'left', '')
+    let g:leaderGuide#displayname =
+        \ substitute(g:leaderGuide#displayname, '^<C-w>l', 'right', '')
+endfunction
+let g:leaderGuide_displayfunc = [function("s:my_displayfunc")]
+let g:lmap =  {}
+
+" <leader>p [project] -------------------------------------------
+let g:lmap.p = {
+            \'name' : 'Project',
+            \'f': [':CtrlP', 'find'],
+            \'t': [':NERDTreeToggle', 'open tree'],
+            \}
+
+" <leader>w [windows] -------------------------------------------
+let g:lmap.w = { 'name' : 'windows' }
+nnoremap <leader>wj <C-w>j
+nnoremap <leader>wk <C-w>k
+nnoremap <leader>wh <C-w>h
+nnoremap <leader>wl <C-w>l
+
+" <leader>b [buffer] -------------------------------------------
+let g:lmap.b = {
+            \'name' : 'buffer',
+            \'n': [':new', 'new'],
+            \'d': [':bdelete', 'delete'],
+            \'f': [':CtrlPBuffer', 'buffer'],
+            \'b': [':BuffergatorToggle', 'list'],
+            \'t': [':BuffergatorTabsOpen', 'tabs open'],
+            \'T': [':BuffergatorTabsClose', 'tabs close'],
+            \}
+
+" <leader>e [errors] ---------------------------------------------
+let g:lmap.e = {
+            \'name' : 'error',
+            \'o'    : [':lopen',   'open location window'],
+            \'c'    : [':lclose',  'close location window'],
+            \','    : [':ll',      'go to current error/warning'],
+            \'en'   : [':lnext',   'next error/warning'],
+            \'ep'   : [':lprev',   'previous error/warning'],
+            \}
+
+" <leader>w [jump/join/split] -----------------------------------
+let g:lmap.j = {
+            \'name': 'jump/join/split',
+            \'j': ['call feedkeys("\<Plug>(easymotion-overwin-f)")', 'goto char'],
+            \'k': ['call feedkeys("\<Plug>(easymotion-overwin-f2)")', 'goto char-2'],
+            \'l': ['call feedkeys("\<Plug>(easymotion-overwin-line)")', 'goto line'],
+            \}
+
+" <leader>w [jump/join/split] -----------------------------------
+let g:lmap.f = {
+            \'name' : 'file',
+            \'s': [':w', 'save'],
+            \'d': [':call delete(expand("%")) | bdelete!', 'delete current'],
+            \}
+map <Leader>ff :Ags<SPACE>
+
+
+" <leader>c [config] ---------------------------------------------
+let g:lmap.c = {
+            \'name' : 'config',
+            \'d'    : [':e $MYVIMRC',   'dotfile'],
+            \}
+
+"
+" nmap <Leader>c :JsDoc<CR>
+
+" nnoremap <Plug>(open-vimrc) :e $MYVIMRC<CR>
+" nmap <leader>fd <Plug>(open-vimrc)
+call leaderGuide#register_prefix_descriptions("<Space>", "g:lmap")
+nnoremap <silent> <leader> :<c-u>LeaderGuide '<Space>'<CR>
+vnoremap <silent> <leader> :<c-u>LeaderGuideVisual '<Space>'<CR>
+
 
 " Local config
 if filereadable($HOME . "/.vimrc.local")
