@@ -10,10 +10,10 @@
 ## apple internal keyboard
 
 ### In all applications
-- `right ⌘  →  left ⌥ + left ⇧ + left ⎈`
-- `⌥ + right ⌘  →  left ⌥ + left ⇧ + left ⎈ + left ⌘ `
+- `right ⌘` →  `left ⌥ + left ⇧ + left ⎈`
+- `⌥ + right ⌘` →  `left ⌥ + left ⇧ + left ⎈ + left ⌘ `
 
 ### in terminal:
-- `⇪ → ⎈ + a`
-- `left ⇧ + ⇪ → ⇪`
+- `⇪` → `⎈ + a`
+- `left ⇧ + ⇪` → `⇪`
 
