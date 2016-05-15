@@ -1,0 +1,46 @@
+Name = "MDErgo1";
+Layout = "Default";
+Base = "Blank";
+Version = "0.2";
+Author = "Fetz";
+KLL = "0.3d";
+Date = "2015-09-12";
+Generator = "KIICONF 0.2";
+
+U"5" : U"F5";
+U"4" : U"F4";
+U"3" : U"F3";
+U"2" : U"F2";
+U"1" : U"F1";
+U"TAB" : U"CAPSLOCK";
+U"B" : U"CAPSLOCK";
+U"MINUS" : U"F12";
+U"FUNCTION6" : U"F11";
+U"6" : U"F6";
+U"7" : U"F7";
+U"8" : U"F8";
+U"9" : U"F9";
+U"0" : U"F10";
+
+# mouseOut
+# Arg1, button, 1-16
+# Arg2, mouse x relative axis -32 767 to 32 767
+# Arg3, mouse y relative axis -32 767 to 32 767
+
+U"ENTER" : mouseOut( 1, 0, 0 );
+U"SPACE" : mouseOut( 2, 0, 0 );
+U"Y" : mouseOut( 3, 0, 0 );
+U"U" : mouseOut( 4, 0, 0 );
+U"I" : mouseOut( 5, 0, 0 );
+U"O" : mouseOut( 6, 0, 0 );
+U"P" : mouseOut( 7, 0, 0 );
+
+U"A" : mouseOut( 0, -5, 0 );
+U"S" : mouseOut( 0, 0, 5 );
+U"D" : mouseOut( 0, 0, -5 );
+U"F" : mouseOut( 0, 5, 0 );
+U"Z" : mouseOut( 0, -1, 0 );
+U"X" : mouseOut( 0, 0, -1 );
+U"C" : mouseOut( 0, 0, 1 );
+U"V" : mouseOut( 0, 1, 0 );
+

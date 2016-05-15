@@ -3,21 +3,27 @@
     <item>
         <name>Change Right Command Key to Control + Shift + Option</name>
         <identifier>private.right_command_to_hyper</identifier>
-        <autogen>
-            __KeyToKey__ KeyCode::COMMAND_R, ModifierFlag::OPTION_R,
-            KeyCode::OPTION_L,
-            ModifierFlag::SHIFT_L | ModifierFlag::CONTROL_L | ModifierFlag::COMMAND_R
-        </autogen>
-        <autogen>
-            __KeyToKey__ KeyCode::COMMAND_R,
-            KeyCode::OPTION_L,
-            ModifierFlag::SHIFT_L | ModifierFlag::CONTROL_L
-        </autogen>
+        <block>
+            <!-- apple internal keyboard -->
+            <device_only>DeviceVendor::RawValue::0x05ac, DeviceProduct::RawValue::0x0274</device_only>
+            <autogen>
+                __KeyToKey__ KeyCode::COMMAND_R, ModifierFlag::OPTION_R,
+                KeyCode::OPTION_L,
+                ModifierFlag::SHIFT_L | ModifierFlag::CONTROL_L | ModifierFlag::COMMAND_R
+            </autogen>
+            <autogen>
+                __KeyToKey__ KeyCode::COMMAND_R,
+                KeyCode::OPTION_L,
+                ModifierFlag::SHIFT_L | ModifierFlag::CONTROL_L
+            </autogen>
+        </block>
     </item>
     <item>
         <name>Change Capslock Key (F19) to Control + a in terminal and to Capslock key in the rest</name>
         <identifier>private.f19_to_tmux_mod_or_capslock</identifier>
         <block>
+            <!-- apple internal keyboard -->
+            <device_only>DeviceVendor::RawValue::0x05ac, DeviceProduct::RawValue::0x0274</device_only>
             <not>TERMINAL</not>
             <autogen>
                 __KeyToKey__ KeyCode::F19,
@@ -25,6 +31,8 @@
             </autogen>
         </block>
         <block>
+            <!-- apple internal keyboard -->
+            <device_only>DeviceVendor::RawValue::0x05ac, DeviceProduct::RawValue::0x0274</device_only>
             <only>TERMINAL</only>
             <autogen>
                 __KeyToKey__ KeyCode::F19, ModifierFlag::SHIFT_L,
