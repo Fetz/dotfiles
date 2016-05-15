@@ -1,16 +1,16 @@
 # FETZ's dotfiles
-[About](#about) &nbsp;|&nbsp; [What's inside](#whats-inside) &nbsp;|&nbsp; [Installation](#installation) &nbsp;|&nbsp;  [TODO](#TODO)|&nbsp;  [License](#license)
+[About](#about) &nbsp;|&nbsp; [What's inside](#whats-inside) &nbsp;|&nbsp; [Docs](#docs) &nbsp;|&nbsp; [Installation](#installation) &nbsp;|&nbsp;  [TODO](#TODO)|&nbsp;  [License](#license)
 ```
-  █████▒▓█████▄▄▄█████▓▒███████▒   ▓█████▄  ▒█████  ▄▄▄█████▓  █████▒██▓ ██▓    ▓█████   ██████ 
-▓██   ▒ ▓█   ▀▓  ██▒ ▓▒▒ ▒ ▒ ▄▀░   ▒██▀ ██▌▒██▒  ██▒▓  ██▒ ▓▒▓██   ▒▓██▒▓██▒    ▓█   ▀ ▒██    ▒ 
-▒████ ░ ▒███  ▒ ▓██░ ▒░░ ▒ ▄▀▒░    ░██   █▌▒██░  ██▒▒ ▓██░ ▒░▒████ ░▒██▒▒██░    ▒███   ░ ▓██▄   
+  █████▒▓█████▄▄▄█████▓▒███████▒   ▓█████▄  ▒█████  ▄▄▄█████▓  █████▒██▓ ██▓    ▓█████   ██████
+▓██   ▒ ▓█   ▀▓  ██▒ ▓▒▒ ▒ ▒ ▄▀░   ▒██▀ ██▌▒██▒  ██▒▓  ██▒ ▓▒▓██   ▒▓██▒▓██▒    ▓█   ▀ ▒██    ▒
+▒████ ░ ▒███  ▒ ▓██░ ▒░░ ▒ ▄▀▒░    ░██   █▌▒██░  ██▒▒ ▓██░ ▒░▒████ ░▒██▒▒██░    ▒███   ░ ▓██▄
 ░▓█▒  ░ ▒▓█  ▄░ ▓██▓ ░   ▄▀▒   ░   ░▓█▄   ▌▒██   ██░░ ▓██▓ ░ ░▓█▒  ░░██░▒██░    ▒▓█  ▄   ▒   ██▒
 ░▒█░    ░▒████▒ ▒██▒ ░ ▒███████▒   ░▒████▓ ░ ████▓▒░  ▒██▒ ░ ░▒█░   ░██░░██████▒░▒████▒▒██████▒▒
  ▒ ░    ░░ ▒░ ░ ▒ ░░   ░▒▒ ▓░▒░▒    ▒▒▓  ▒ ░ ▒░▒░▒░   ▒ ░░    ▒ ░   ░▓  ░ ▒░▓  ░░░ ▒░ ░▒ ▒▓▒ ▒ ░
  ░       ░ ░  ░   ░    ░░▒ ▒ ░ ▒    ░ ▒  ▒   ░ ▒ ▒░     ░     ░      ▒ ░░ ░ ▒  ░ ░ ░  ░░ ░▒  ░ ░
- ░ ░       ░    ░      ░ ░ ░ ░ ░    ░ ░  ░ ░ ░ ░ ▒    ░       ░ ░    ▒ ░  ░ ░      ░   ░  ░  ░  
-           ░  ░          ░ ░          ░        ░ ░                   ░      ░  ░   ░  ░      ░  
-                       ░            ░                                                           
+ ░ ░       ░    ░      ░ ░ ░ ░ ░    ░ ░  ░ ░ ░ ░ ▒    ░       ░ ░    ▒ ░  ░ ░      ░   ░  ░  ░
+           ░  ░          ░ ░          ░        ░ ░                   ░      ░  ░   ░  ░      ░
+                       ░            ░
 ```
 
 <img width="1436" alt="screen shot 2016-05-12 at 02 16 21" src="https://cloud.githubusercontent.com/assets/1071113/15201365/3099f0da-17e8-11e6-9fda-e43010fe6705.png">
@@ -39,6 +39,13 @@ inspired by dotfiles from:
 - spacemacs dotfile
 - zsh (pretzo)
 - Amethyst tiling window manager ala xmonad and i3
+
+## Docs
+- keyboard:
+  - [internal keyboard config](docs/karabiner.md)
+  - [infinity ergodox](docs/infinity.md)
+- [vim](docs/vim.md)
+- [tmux](docs/tmux.md)
 
 ## Installation
 

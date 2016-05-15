@@ -9,7 +9,7 @@
             <autogen>
                 __KeyToKey__ KeyCode::COMMAND_R, ModifierFlag::OPTION_R,
                 KeyCode::OPTION_L,
-                ModifierFlag::SHIFT_L | ModifierFlag::CONTROL_L | ModifierFlag::COMMAND_R
+                ModifierFlag::SHIFT_L | ModifierFlag::CONTROL_L | ModifierFlag::COMMAND_L
             </autogen>
             <autogen>
                 __KeyToKey__ KeyCode::COMMAND_R,
