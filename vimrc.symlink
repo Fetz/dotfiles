@@ -18,6 +18,12 @@ filetype off                  " required
 set autoread
 au CursorHold * checktime
 
+" No annoying sound on errors
+set noerrorbells
+set novisualbell
+set t_vb=
+set tm=500
+
 " set re=1
 
 " ----------------------------------------------------------------
@@ -85,6 +91,12 @@ set splitright
 set nobackup
 set nowritebackup
 set noswapfile
+
+" Move a line of text using ALT+[jk]
+nmap ∆ mz:m+<cr>`z
+nmap ˚ mz:m-2<cr>`z
+vmap ∆ :m'>+<cr>`<my`>mzgv`yo`z
+vmap ˚ :m'<-2<cr>`>my`<mzgv`yo`z
 
 " ----------------------------------------------------------------
 " key mapping
@@ -283,6 +295,8 @@ Plug 'carlitux/deoplete-ternjs'
 Plug 'heavenshell/vim-jsdoc'
 Plug 'othree/jspc.vim'
 
+Plug 'elmcast/elm-vim', { 'for': 'elm' }
+
 " All of your Plugins must be added before the following line
 call plug#end()
 
@@ -375,9 +389,9 @@ let g:jsx_ext_required = 0
 " autocmd BufRead *.as set filetype=actionscript
 " autocmd BufRead *.mxml set filetype=mxml
 
+
 " deoplete
 if (exists("g:plugs['deoplete.nvim']"))
-
     let g:deoplete#enable_at_startup = 1
     let g:deoplete#disable_auto_complete = 0
     let g:deoplete#file#enable_buffer_path = 1
@@ -385,11 +399,11 @@ if (exists("g:plugs['deoplete.nvim']"))
     let g:deoplete#keyword_patterns.clojure = '[\w!$%&*+/:<=>?@\^_~\-\.]*'
 
     autocmd InsertLeave,CompleteDone * if pumvisible() == 0 | pclose | endif
-    " if !exists('g:deoplete#omni#input_patterns')
-    "     let g:deoplete#omni#input_patterns = {}
-    " endif
-    " let g:tern_request_timeout = 3
-    " let g:tern_request_timeout = 0.4
+    if !exists('g:deoplete#omni#input_patterns')
+        let g:deoplete#omni#input_patterns = {}
+    endif
+    let g:tern_request_timeout = 3
+    let g:tern_request_timeout = 0.4
 
     " completion
     augroup omnifuncs
@@ -408,12 +422,38 @@ if (exists("g:plugs['deoplete.nvim']"))
 
         autocmd FileType javascript setlocal omnifunc=tern#Complete
     endif
+    "
+    " " deoplete tab-complete
+    " inoremap <silent><expr> <Tab> pumvisible() ? "\<C-n>" : deoplete#mappings#manual_complete()
+    " " ,<Tab> for regular tab
+    " inoremap <Leader><Tab> <Space><Space>
 
-    " deoplete tab-complete
-    inoremap <silent><expr> <Tab> pumvisible() ? "\<C-n>" : deoplete#mappings#manual_complete()
-    " ,<Tab> for regular tab
-    inoremap <Leader><Tab> <Space><Space>
+    " Plugin key-mappings.
+    let g:neosnippet#enable_snipmate_compatibility = 1
+    " Tell Neosnippet about the other snippets
+    let g:neosnippet#snippets_directory='~/.vim/snippets/'
+
+    imap <C-b>     <Plug>(neosnippet_expand_or_jump)
+    smap <C-b>     <Plug>(neosnippet_expand_or_jump)
+    xmap <C-b>     <Plug>(neosnippet_expand_target)
+
+    " fix issues with multiple cursors and complete
+    function! Multiple_cursors_before()
+        let b:deoplete_disable_auto_complete = 1
+        if exists(':NeoCompleteLock')==2
+            exe 'NeoCompleteLock'
+        endif
+    endfunction
+
+    function! Multiple_cursors_after()
+        let b:deoplete_disable_auto_complete = 0
+        if exists(':NeoCompleteUnlock')==2
+            exe 'NeoCompleteUnlock'
+        endif
+    endfunction
+
 endif
+
 
 " buffergator
 let g:buffergator_suppress_keymaps = 1 " Disable default mappings
@@ -441,6 +481,8 @@ function! s:my_displayfunc()
     let g:leaderGuide#displayname =
         \ substitute(g:leaderGuide#displayname, '^<Plug>', '', '')
     let g:leaderGuide#displayname =
+        \ substitute(g:leaderGuide#displayname, '^guide-.*-', '', '')
+    let g:leaderGuide#displayname =
         \ substitute(g:leaderGuide#displayname, '^<C-w>j', 'down', '')
     let g:leaderGuide#displayname =
         \ substitute(g:leaderGuide#displayname, '^<C-w>k', 'up', '')
@@ -455,9 +497,11 @@ let g:lmap =  {}
 " <leader>p [project] -------------------------------------------
 let g:lmap.p = {
             \'name' : 'Project',
-            \'f': [':CtrlP', 'find'],
             \'t': [':NERDTreeToggle', 'open tree'],
             \}
+
+nnoremap <Plug>guide-project-find :CtrlP<CR>
+nmap <leader>pf <Plug>guide-project-find
 
 " <leader>w [windows] -------------------------------------------
 let g:lmap.w = { 'name' : 'windows' }
@@ -469,22 +513,24 @@ nnoremap <leader>wl <C-w>l
 " <leader>b [buffer] -------------------------------------------
 let g:lmap.b = {
             \'name' : 'buffer',
-            \'n': [':new', 'new'],
-            \'d': [':bdelete', 'delete'],
-            \'f': [':CtrlPBuffer', 'buffer'],
-            \'b': [':BuffergatorToggle', 'list'],
-            \'t': [':BuffergatorTabsOpen', 'tabs open'],
-            \'T': [':BuffergatorTabsClose', 'tabs close'],
+            \'n': ['new', 'new'],
+            \'d': ['bdelete', 'delete'],
+            \'b': ['BuffergatorToggle', 'list'],
+            \'t': ['BuffergatorTabsOpen', 'tabs open'],
+            \'T': ['BuffergatorTabsClose', 'tabs close'],
             \}
+
+nnoremap <Plug>guide-buffer-find :CtrlPBuffer<CR>
+nmap <leader>bf <Plug>guide-buffer-find
 
 " <leader>e [errors] ---------------------------------------------
 let g:lmap.e = {
             \'name' : 'error',
-            \'o'    : [':lopen',   'open location window'],
-            \'c'    : [':lclose',  'close location window'],
-            \','    : [':ll',      'go to current error/warning'],
-            \'en'   : [':lnext',   'next error/warning'],
-            \'ep'   : [':lprev',   'previous error/warning'],
+            \'o'    : ['lopen',   'open location window'],
+            \'c'    : ['lclose',  'close location window'],
+            \','    : ['ll',      'go to current error/warning'],
+            \'en'   : ['lnext',   'next error/warning'],
+            \'ep'   : ['lprev',   'previous error/warning'],
             \}
 
 " <leader>w [jump/join/split] -----------------------------------
@@ -498,27 +544,32 @@ let g:lmap.j = {
 " <leader>w [jump/join/split] -----------------------------------
 let g:lmap.f = {
             \'name' : 'file',
-            \'s': [':w', 'save'],
-            \'d': [':call delete(expand("%")) | bdelete!', 'delete current'],
+            \'s': ['w', 'save'],
+            \'q': ['q', 'close'],
+            \'x': ['q!', 'forget'],
+            \'a': ['qa', 'close all'],
+            \'d': ['call delete(expand("%")) | bdelete!', 'delete current'],
             \}
-map <Leader>ff :Ags<SPACE>
+
+nnoremap <Plug>guide-file-find :Ags<SPACE>
+nmap <leader>ff <Plug>guide-file-find
 
 
 " <leader>c [config] ---------------------------------------------
+
 let g:lmap.c = {
             \'name' : 'config',
-            \'d'    : [':e $MYVIMRC',   'dotfile'],
+            \'d'    : ['e $MYVIMRC',   'dotfile'],
             \}
 
-"
-" nmap <Leader>c :JsDoc<CR>
+nnoremap <Plug>guide-config-reload :so $MYVIMRC<CR>
+nmap <leader>cr <Plug>guide-config-reload
 
-" nnoremap <Plug>(open-vimrc) :e $MYVIMRC<CR>
-" nmap <leader>fd <Plug>(open-vimrc)
 call leaderGuide#register_prefix_descriptions("<Space>", "g:lmap")
 nnoremap <silent> <leader> :<c-u>LeaderGuide '<Space>'<CR>
 vnoremap <silent> <leader> :<c-u>LeaderGuideVisual '<Space>'<CR>
 
+" nmap <Leader>c :JsDoc<CR>
 
 " Local config
 if filereadable($HOME . "/.vimrc.local")

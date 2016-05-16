@@ -226,6 +226,11 @@ install_dotfiles () {
 setup_spaceemacs () {
   info 'setting up spacemacs...'
 
+  brew tap railwaycat/emacsmacport
+  brew cask install emacs-mac
+  brew install emacs
+  brew linkapps emacs
+
   tic -o ~/.terminfo emacs/eterm-color.ti # fix emacs color terminal with zsh
   git_clone https://github.com/syl20bnr/spacemacs ~/.emacs.d
 }
@@ -233,7 +238,9 @@ setup_spaceemacs () {
 setup_vim () {
   info 'setting up vim...'
 
-  git_clone https://github.com/VundleVim/Vundle.vim.git ~/.vim/bundle/Vundle.vim
+  brew tap neovim/neovim
+  brew install --HEAD neovim
+  brew install vim
 
   if ! [ -f ~/.vim/colors/hybrid.vim ]
   then
@@ -245,6 +252,7 @@ setup_vim () {
 
   link_file ~/.vim "$XDG_CONFIG_HOME/nvim"
   link_file ~/.vimrc "$XDG_CONFIG_HOME/nvim/init.vim"
+  link_file ~/.vim vim/snippets
 }
 
 install_apps () {
@@ -296,7 +304,6 @@ install_apps () {
   brew cask install sourcetree
   brew cask install hipchat
   brew cask install robomongo
-
 
   # browsers
   brew cask install google-chrome
@@ -362,22 +369,12 @@ install_apps () {
   # editors
   brew cask install sublime-text
 
-  # emacs
-  brew tap railwaycat/emacsmacport
-  brew cask install emacs-mac
-  brew install emacs
-  brew linkapps emacs
-
-  # vim
-  brew tap neovim/neovim
-  brew install --HEAD neovim
-  brew install vim
-
+  setup_spaceemacs
+  setup_vim
   setup_karabiner
 
   # Remove outdated versions from the cellar
   brew cleanup
-
 }
 
 setup_zsh () {
@@ -395,6 +392,7 @@ setup_zsh () {
   echo 'change default shell to zsh'
   chsh -s /bin/zsh
 }
+
 
 setup_karabiner () {
   info 'setup karabiner'
@@ -414,6 +412,4 @@ setup_xcode
 setup_gitconfig
 install_apps
 install_dotfiles
-setup_spaceemacs
-setup_vim
 setup_zsh

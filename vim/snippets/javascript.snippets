@@ -1,0 +1,82 @@
+snippet imp
+  import ${1} from '${2}';
+
+snippet impm
+  import {${1}} from '${2}';
+
+snippet impr
+  import React from 'react';
+
+snippet jsxd
+  <div ${1:properties}>
+    ${0}
+  </div>
+
+snippet jsxc
+  <${1:ClassName} ${2:properties}>
+    ${0}
+  </$1>
+
+snippet rcc
+	/**
+	 * @jsx React.DOM
+	 */
+
+	import React, { Component } from 'react';
+
+	class ${1:ClassName} extends Component {
+
+		render() {
+			return (
+				${0:<div />}
+			);
+		}
+	}
+
+	export default $1;
+
+snippet rren
+	render() {
+		return (
+			${1:<div />}
+		);
+	}
+
+snippet rcdm
+	componentDidMount() {
+		${1}
+	}
+
+snippet rcdu
+	componentDidUpdate(prevProps, prevState) {
+		${1}
+	}
+
+snippet rcwm
+	componentWillMount() {
+		${1}
+	}
+
+snippet rcwrp
+	componentWillReceiveProps(nextProps) {
+		${1}
+	}
+
+snippet rcwum
+	componentWillUnmount() {
+		${1}
+	}
+
+snippet rst
+	setState({
+		${1}: ${2}
+	});
+
+snippet rsu
+	shouldComponentUpdate(nextProps, nextState) {
+		${1}
+	}
+
+snippet rtst
+	this.state.${1}
+
