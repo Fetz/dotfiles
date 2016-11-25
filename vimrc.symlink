@@ -21,7 +21,7 @@ au CursorHold * checktime
 " No annoying sound on errors
 set noerrorbells
 set novisualbell
-set t_vb=
+" set t_vb=
 set tm=500
 
 " set re=1
@@ -34,6 +34,11 @@ set showcmd             " show incomplete commands
 set cursorline          " highlight current line
 set ruler               " always show cursor
 set guioptions-=T       " hide the toolbar
+syntax on
+" set foldmethod=syntax
+" set foldlevelstart=1
+" let javaScript_fold=1
+
 set nofoldenable        " disable folding because it is evil
 " set nowrap              " turn word wrap off
 set shell=/bin/bash
@@ -68,8 +73,8 @@ set scrolloff=10
 " code style
 set expandtab     " convert tabs to spaces
 set tabstop=2     " set tab size
-set shiftwidth=4  " the number of spaces inserted for a tab
-set softtabstop=4 " number of spaces in tab when editing
+set shiftwidth=2  " the number of spaces inserted for a tab
+set softtabstop=2 " number of spaces in tab when editing
 
 " allow copy&paste system
 set clipboard=unnamed
@@ -165,7 +170,7 @@ set smartcase
 set wildignore+=*/.git/*,*/.hg/*,*/.svn/*.,*/.DS_Store,*/node_modules
 
 " search results to show in quickfix
-command -nargs=+ -complete=file -bar Ag silent! grep! <args>|cwindow|redraw!
+" command -nargs=+ -complete=file -bar Ag silent! grep! <args>|cwindow|redraw!
 
 " ----------------------------------------------------------------
 " PLugins
@@ -213,17 +218,17 @@ if g:has_completion
                 \| Plug 'Shougo/neosnippet-snippets'
 endif
 
-Plug 'scrooloose/nerdtree', { 'on':  'NERDTreeToggle' }
+Plug 'scrooloose/nerdtree', { 'on':  'NERDTreeTabsToggle' }
+Plug 'jistr/vim-nerdtree-tabs', { 'on': 'NERDTreeTabsToggle' }
 " <Plug> to not move on * search function
 Plug 'haya14busa/vim-asterisk'
-Plug 'kien/ctrlp.vim'
+Plug 'ctrlpvim/ctrlp.vim'
 Plug 'tpope/vim-fugitive'
 Plug 'tpope/vim-surround'
 Plug 'tpope/vim-repeat'
 " Plug 'tpope/vim-commentary.git'
 Plug 'tomtom/tcomment_vim'
 Plug 'bling/vim-airline'
-Plug 'jistr/vim-nerdtree-tabs'
 Plug 'Lokaltog/vim-easymotion'
 Plug 'terryma/vim-multiple-cursors'
 Plug 'terryma/vim-expand-region'
@@ -238,6 +243,9 @@ Plug 'editorconfig/editorconfig-vim'
 Plug 'tmux-plugins/vim-tmux'
 Plug 'christoomey/vim-tmux-navigator'
 Plug 'jeetsukumaran/vim-buffergator'
+
+Plug 'jordwalke/VimSplitBalancer'
+" Plug 'zhaocai/GoldenView.Vim'
 
 " which key / guide key in vim
 Plug 'hecal3/vim-leader-guide'
@@ -258,7 +266,7 @@ Plug 'ingydotnet/yaml-vim', { 'for': 'yaml' }
 Plug 'plasticboy/vim-markdown', { 'for': 'markdown' }
 Plug 'benekastah/neomake'
 " Plugin 'jaxbot/semantic-highlight.vim'
-" Plug 'vim-scripts/Flex-4'
+Plug 'vim-scripts/Flex-4'
 
 " ========================================================================
 " Language: HTML, XML, and generators: mustache, handlebars
@@ -282,8 +290,11 @@ Plug 'othree/csscomplete.vim'
 Plug 'elzr/vim-json'
 " detect extensionless node scripts (executables) via shebang
 " and add gf for going to node_modules files
-Plug 'othree/yajs.vim', { 'for': 'javascript' }
-Plug 'gavocanov/vim-js-indent', { 'for': 'javascript' }
+" Plug 'othree/yajs.vim', { 'for': 'javascript' }
+" Plug 'gavocanov/vim-js-indent', { 'for': 'javascript' }
+Plug 'pangloss/vim-javascript', { 'for': ['javascript', 'javascript.jsx'] }
+Plug 'mxw/vim-jsx', { 'for': ['javascript', 'javascript.jsx'] }
+
 Plug 'moll/vim-node'
 Plug 'othree/javascript-libraries-syntax.vim'
 Plug 'othree/es.next.syntax.vim'
@@ -302,7 +313,7 @@ call plug#end()
 
 " turn on syntax highlighting when not in vimdiff mode
 " if !&diff
-" 	syntax on
+" syntax on
 " endif
 filetype plugin indent on    " required
 
@@ -382,13 +393,30 @@ let g:used_javascript_libs = 'jquery,underscore,lodash,react,flux,chai,sinon,gul
 let g:jsdoc_default_mapping = 0
 let g:jsdoc_underscore_private = 1
 
+" " configure vim-javascript
+" let g:javascript_enable_domhtmlcss = 1
+" let g:javascript_conceal_function       = "ƒ"
+" let g:javascript_conceal_null           = "ø"
+" let g:javascript_conceal_this           = "@"
+" let g:javascript_conceal_return         = "⇚"
+" let g:javascript_conceal_undefined      = "¿"
+" let g:javascript_conceal_NaN            = "ℕ"
+" let g:javascript_conceal_prototype      = "¶"
+" let g:javascript_conceal_static         = "•"
+" let g:javascript_conceal_super          = "Ω"
+" let g:javascript_conceal_arrow_function = "⇒"
+"
 " configure jsx
 let g:jsx_ext_required = 0
 
 " configure as3
-" autocmd BufRead *.as set filetype=actionscript
-" autocmd BufRead *.mxml set filetype=mxml
+autocmd BufRead *.as set filetype=actionscript
+autocmd BufRead *.mxml set filetype=mxml
 
+" goldenView
+" set textwidth=80
+let g:goldenview__enable_default_mapping = 0
+let g:goldenview__enable_at_startup = 0
 
 " deoplete
 if (exists("g:plugs['deoplete.nvim']"))
@@ -497,7 +525,7 @@ let g:lmap =  {}
 " <leader>p [project] -------------------------------------------
 let g:lmap.p = {
             \'name' : 'Project',
-            \'t': [':NERDTreeToggle', 'open tree'],
+            \'t': [':NERDTreeTabsToggle', 'open tree'],
             \}
 
 nnoremap <Plug>guide-project-find :CtrlP<CR>
