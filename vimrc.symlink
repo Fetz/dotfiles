@@ -226,6 +226,7 @@ Plug 'ctrlpvim/ctrlp.vim'
 Plug 'tpope/vim-fugitive'
 Plug 'tpope/vim-surround'
 Plug 'tpope/vim-repeat'
+Plug 'tpope/vim-sleuth'
 " Plug 'tpope/vim-commentary.git'
 Plug 'tomtom/tcomment_vim'
 Plug 'bling/vim-airline'
@@ -264,9 +265,9 @@ endif
 Plug 'mattn/emmet-vim'
 Plug 'ingydotnet/yaml-vim', { 'for': 'yaml' }
 Plug 'plasticboy/vim-markdown', { 'for': 'markdown' }
-Plug 'benekastah/neomake'
+Plug 'neomake/neomake'
 " Plugin 'jaxbot/semantic-highlight.vim'
-Plug 'vim-scripts/Flex-4'
+Plug 'vim-scripts/Flex-4', { 'for': 'as' }
 
 " ========================================================================
 " Language: HTML, XML, and generators: mustache, handlebars
@@ -277,7 +278,7 @@ Plug 'mustache/vim-mustache-handlebars'
 Plug 'davidosomething/syntastic-hbstidy'
 
 " ========================================================================
-" Language: SCSS
+" Language: CSS/SCSS
 " ========================================================================
 Plug 'JulesWang/css.vim'
         \| Plug 'hail2u/vim-css3-syntax'
@@ -287,6 +288,7 @@ Plug 'othree/csscomplete.vim'
 " ========================================================================
 " Language: JavaScript / ES.NEXT / JSON
 " ========================================================================
+Plug 'jaawerth/nrun.vim'
 Plug 'elzr/vim-json'
 " detect extensionless node scripts (executables) via shebang
 " and add gf for going to node_modules files
@@ -379,11 +381,33 @@ let g:indent_guides_enable_on_vim_startup = 1
 let g:gitgutter_eager = 0
 
 " configure neomake
+autocmd! BufWritePost * Neomake
+let g:neomake_open_list = 2
+" let g:neomake_verbose = 3
+
 if executable('npm')
-    if !executable('eslint')
-        execute '!npm install -g eslint babel-eslint eslint-plugin-import eslint-plugin-react eslint-plugin-jsx-a11y eslint-config-airbnb;'
+  if filereadable(".eslintrc")
+    if !executable('./node_modules/eslint/bin/eslint') && !executable('eslint')
+      execute '!npm install -g eslint babel-eslint eslint-plugin-import eslint-plugin-react eslint-plugin-jsx-a11y eslint-config-airbnb;'
     endif
+
+    let g:neomake_javascript_eslint_exe = nrun#Which('eslint')
     let g:neomake_javascript_enabled_makers = ['eslint']
+    let g:neomake_jsx_enabled_makers = ['eslint']
+
+  elseif filereadable(".jshintrc")
+    if !executable('./node_modules/jshint/bin/jshint') && !executable('jshint')
+      execute '!npm install -g jshint'
+    endif
+
+    let g:neomake_javascript_jshint_exe = nrun#Which('jshint')
+    let g:neomake_javascript_jshint_maker = {
+        \ 'args': ['--verbose'],
+        \ 'errorformat': '%A%f: line %l\, col %v\, %m \(%t%*\d\)',
+        \ }
+    let g:neomake_javascript_enabled_makers = ['jshint']
+    let g:neomake_jsx_enabled_makers = ['jshint']
+  endif
 endif
 
 " javascript libraries syntax
@@ -415,8 +439,8 @@ autocmd BufRead *.mxml set filetype=mxml
 
 " goldenView
 " set textwidth=80
-let g:goldenview__enable_default_mapping = 0
-let g:goldenview__enable_at_startup = 0
+" let g:goldenview__enable_default_mapping = 0
+" let g:goldenview__enable_at_startup = 0
 
 " deoplete
 if (exists("g:plugs['deoplete.nvim']"))
@@ -557,8 +581,8 @@ let g:lmap.e = {
             \'o'    : ['lopen',   'open location window'],
             \'c'    : ['lclose',  'close location window'],
             \','    : ['ll',      'go to current error/warning'],
-            \'en'   : ['lnext',   'next error/warning'],
-            \'ep'   : ['lprev',   'previous error/warning'],
+            \'n'    : ['lnext',   'next error/warning'],
+            \'p'    : ['lprev',   'previous error/warning'],
             \}
 
 " <leader>w [jump/join/split] -----------------------------------

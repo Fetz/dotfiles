@@ -252,7 +252,7 @@ setup_vim () {
 
   link_file ~/.vim "$XDG_CONFIG_HOME/nvim"
   link_file ~/.vimrc "$XDG_CONFIG_HOME/nvim/init.vim"
-  link_file ~/.vim vim/snippets
+  # link_file ~/.vim vim/snippets
 }
 
 install_apps () {
@@ -293,7 +293,7 @@ install_apps () {
   brew cask install amethyst
   brew cask install alfred
   brew cask install dropbox
-  brew cask install skype
+  # brew cask install skype
 
   # dev
   brew cask install iterm2-nightly
@@ -302,15 +302,15 @@ install_apps () {
   brew cask install imagealpha
   brew cask install imageoptim
   brew cask install sourcetree
-  brew cask install hipchat
+  # brew cask install hipchat
   brew cask install robomongo
 
   # browsers
-  brew cask install google-chrome
+  # brew cask install google-chrome
   brew cask install google-chrome-canary
   brew cask install firefoxdeveloperedition
   brew cask install firefox
-  brew cask install torbrowser
+  # brew cask install torbrowser
 
   # fun
   brew cask install vlc
@@ -402,14 +402,15 @@ setup_karabiner () {
   brew cask install seil
 
   local overwrite_all=true backup_all=false skip_all=false
-  link_file karabiner/private.xml /Applications/Karabiner.app/Contents/Resources/private.xml
+  link_file karabiner/private.xml /Applications/Karabiner.app/Contents/Resources/private.xml > /dev/null
 
   info 'change key 80 in seils'
   open 'https://pqrs.org/osx/karabiner/faq.html.en#exchange-caps-lock-and-delete'
 }
 
 setup_xcode
-setup_gitconfig
-install_apps
+# setup_gitconfig
+# setup_zsh
+# install_apps
+setup_karabiner
 install_dotfiles
-setup_zsh
