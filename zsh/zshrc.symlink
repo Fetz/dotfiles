@@ -1,0 +1,107 @@
+export ZPLUG_HOME=/usr/local/opt/zplug
+source $ZPLUG_HOME/init.zsh
+
+ENHANCD_FILTER=fzy:fzf
+export ENHANCD_FILTER
+
+KEYTIMEOUT=1
+
+# theme
+zplug "mafredri/zsh-async"
+zplug "sindresorhus/pure"
+
+# helper
+zplug "djui/alias-tips"
+zplug "zsh-users/zsh-syntax-highlighting"
+# zplug "tymm/zsh-directory-history", as:command, use:"{dirhist|zsh-directory-history}.zsh"
+zplug "zsh-users/zsh-history-substring-search"
+zplug "zsh-users/zsh-completions"
+zplug "zsh-users/zsh-autosuggestions", as:command, use:zsh-autosuggestions.zsh
+zplug "b4b4r07/emoji-cli"
+zplug "mrowa44/emojify", as:command, use:emojify
+
+# jump
+zplug "mfaerevaag/wd"
+zplug "rupa/z", as:command, use:z.sh, defer:1
+zplug "b4b4r07/enhancd", use:init.sh
+
+# mac
+zplug "unixorn/tumult.plugin.zsh", use:tumult.plugin.zsh
+
+# git
+zplug "plugins/git", from:oh-my-zsh
+zplug "paulirish/git-open", as:command
+zplug "zdharma/zsh-diff-so-fancy", as:command, use:bin/git-dsf
+zplug "k4rthik/git-cal", as:command
+
+# node
+zplug "lukechilds/zsh-better-npm-completion", defer:1
+
+# Install plugins if there are plugins that have not been installed
+if ! zplug check --verbose; then
+  printf "Install? [y/N]: "
+  if read -q; then
+    echo; zplug install
+  fi
+fi
+
+zplug load
+
+# fix: (eval):setopt:3: no such option: NO_warnnestedvar
+_comp_options="${_comp_options/NO_warnnestedvar/}"
+
+# func
+function tmuxRelaod_func {
+  tmux attach -t $1 -d
+}
+
+function diffExclude_func {
+  git diff `git status -s |grep -v $1 |cut -b4-`
+}
+
+function backupBrew_func {
+  brew list > $HOME/.dotfiles/Fetz/brew/new_brew_list
+  brew cask list > $HOME/.dotfiles/Fetz/brew/new_cask_list
+}
+
+export NVM_DIR="$HOME/.nvm"
+[ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"  # This loads nvm
+[ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion"  # This loads nvm bash_completion
+
+# Calling nvm use automatically in a directory with a .nvmrc file
+# https://github.com/creationix/nvm#zsh
+autoload -U add-zsh-hook
+load-nvmrc() {
+  if [[ -f .nvmrc && -r .nvmrc ]]; then
+    nvm use
+  fi
+}
+add-zsh-hook chpwd load-nvmrc
+
+# handy keybindings
+bindkey "^A" beginning-of-line
+bindkey "^E" end-of-line
+bindkey "^R" history-incremental-search-backward
+bindkey "^P" history-search-backward
+bindkey "^Y" accept-and-hold
+bindkey "^N" insert-last-word
+bindkey '^W' backward-kill-word
+bindkey '^K' kill-line
+bindkey '^U' backward-kill-line
+bindkey -s "^T" "^[Isudo ^[A" # "t" for "toughguy"
+
+### alias
+
+# TMUX
+alias tma='tmux attach'
+alias tms='tmux new -s'
+alias tmk='tmux kill-session'
+alias tmka='tmux kill-server'
+alias tml='tmux list-sessions'
+alias tmr=tmuxRelaod_func
+
+# other
+alias gdiff=diffExclude_func
+alias brew_backup=backupBrew_func
+
+export GPG_TTY=$(tty)

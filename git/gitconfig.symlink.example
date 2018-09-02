@@ -1,0 +1,19 @@
+[core]
+  excludesfile = ~/.gitignore
+  editor = EDITOR
+[url "ssh://git@github.com/"]
+  insteadOf = git://github.com/
+[push]
+  default = simple
+[url "https://"]
+  insteadOf = git://
+[credential]
+  helper = CREDENTIAL_HELPER
+[includeIf "gitdir:~/Work/"]
+  path = .gitconfig-work
+[includeIf "gitdir:~/OpenSource/"]
+  path = .gitconfig-personal
+[includeIf "gitdir:~/Personal/"]
+  path = .gitconfig-personal
+[gpg]
+  program = /usr/local/bin/gpg

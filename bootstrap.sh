@@ -138,41 +138,8 @@ link_file () {
   fi
 }
 
-setup_xcode () {
-  if ! xcode-select --print-path &> /dev/null; then
-    # Prompt user to install the XCode Command Line Tools
-    xcode-select --install &> /dev/null
-
-    # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-
-    # Wait until the XCode Command Line Tools are installed
-    until xcode-select --print-path &> /dev/null; do
-        sleep 5
-    done
-
-    print_result $? 'Install XCode Command Line Tools'
-
-    # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-
-    # Point the `xcode-select` developer directory to
-    # the appropriate directory from within `Xcode.app`
-    # https://github.com/alrra/dotfiles/issues/13
-
-    sudo xcode-select -switch /Applications/Xcode.app/Contents/Developer
-    print_result $? 'Make "xcode-select" developer directory point to Xcode'
-
-    # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-
-    # Prompt user to agree to the terms of the Xcode license
-    # https://github.com/alrra/dotfiles/issues/10
-
-    sudo xcodebuild -license
-    print_result $? 'Agree with the XCode Command Line Tools licence'
-  fi
-}
-
 setup_gitconfig () {
-  if ! [ -f gitconfig.symlink ]
+  if ! [ -f git/gitconfig.symlink ]
   then
     info 'setup gitconfig'
 
@@ -182,14 +149,20 @@ setup_gitconfig () {
       credential='osxkeychain'
     fi
 
-    user ' - What is your git author name?'
-    read -e authorname
-    user ' - What is your git author email?'
-    read -e authoremail
+    user ' - What is your personal git author name?'
+    read -e authorname_personal
+    user ' - What is your personal git author email?'
+    read -e authoremail_personal
+    user ' - Do you want to verify your personal git commits?'
+    read -e use_gpg_personal
+    user ' - What is your work git author name?'
+    read -e authorname_work
+    user ' - What is your work git author email?'
+    read -e authoremail_work
+    user ' - Do you want to verify your work git commits?'
+    read -e use_gpg_work
     user ' - What is your git editor?'
     read -e editor
-
-    sed -e "s/AUTHORNAME/$authorname/g" -e "s/AUTHOREMAIL/$authoremail/g" -e "s/CREDENTIAL_HELPER/$credential/g" -e "s/EDITOR/$editor/g" gitconfig.symlink.example > gitconfig.symlink
 
     info 'allow to use ssh with github'
     ssh-keygen -t rsa -b 4096 -C $authoremail
@@ -200,12 +173,26 @@ setup_gitconfig () {
     open https://github.com/settings/ssh
     pause
 
-    info 'generate token if you prefer to use https'
+    # not using much the https
+    # info 'generate token if you prefer to use https'
+#
+    # open https://github.com/settings/tokens
+    # info 'please check https://help.github.com/articles/creating-an-access-token-for-command-line-use/'
+    # info "and this https://help.github.com/articles/caching-your-github-password-in-git/ if you don't know or remember what to do with the token"
+    # pause
 
-    open https://github.com/settings/tokens
-    info 'please check https://help.github.com/articles/creating-an-access-token-for-command-line-use/'
-    info "and this https://help.github.com/articles/caching-your-github-password-in-git/ if you don't know or remember what to do with the token"
+    gpg --full-generate-key
+    GPG_KEY=$(gpg --list-secret-keys --keyid-format LONG | grep sec | grep -o "/\([0-9A-Z]\+\)" | grep -o "[0-9A-Z]\+")
+    gpg --armor --export $GPG_KEY > pbcopy
+
+    open https://github.com/settings/ssh
+    info 'gpg key is in the clipboard add it to github'
+    info 'please check https://help.github.com/articles/generating-a-new-gpg-key/'
     pause
+
+    sed -e "s/AUTHORNAME/$authorname_work/g" -e "s/AUTHOREMAIL/$authoremail_work/g" -e "s/USE_GPG/$use_gpg_work/g" -e "s/SIGN_KEY/$GPG_KEY/g" git/gitconfig-work.symlink.example > git/gitconfig-work.symlink
+    sed -e "s/AUTHORNAME/$authorname_personal/g" -e "s/AUTHOREMAIL/$authoremail_personal/g" -e "s/USE_GPG/$use_gpg_personal/g" -e "s/SIGN_KEY/$GPG_KEY/g" git/gitconfig-personal.symlink.example > git/gitconfig-personal.symlink
+    sed -e "s/CREDENTIAL_HELPER/$credential/g" -e "s/EDITOR/$editor/g" git/gitconfig.symlink.example > git/gitconfig.symlink
 
     success 'gitconfig'
   fi
@@ -221,49 +208,24 @@ install_dotfiles () {
     dst="$HOME/.$(basename "${src%.*}")"
     link_file "$src" "$dst"
   done
-}
-
-setup_spaceemacs () {
-  info 'setting up spacemacs...'
-
-  brew tap railwaycat/emacsmacport
-  brew cask install emacs-mac
-  brew install emacs
-  brew linkapps emacs
-
-  tic -o ~/.terminfo emacs/eterm-color.ti # fix emacs color terminal with zsh
-  git_clone https://github.com/syl20bnr/spacemacs ~/.emacs.d
+  
+  success 'dotfiles'
 }
 
 setup_vim () {
   info 'setting up vim...'
+  # install spacevim
+  curl -sLf https://spacevim.org/install.sh | bash
 
-  brew tap neovim/neovim
-  brew install --HEAD neovim
-  brew install vim
+  VIM_CONFIG_HOME=$HOME/.SpaceVim.d/
 
-  if ! [ -f ~/.vim/colors/hybrid.vim ]
-  then
-    curl -OL https://raw.githubusercontent.com/w0ng/vim-hybrid/master/colors/hybrid.vim
-    mkdir -p ~/.vim/colors/; mv hybrid.vim ~/.vim/colors/
-  fi
+  mkdir -p "$VIM_CONFIG_HOME/autoload/"
 
-  mkdir -p ${XDG_CONFIG_HOME:=$HOME/.config}
-
-  link_file ~/.vim "$XDG_CONFIG_HOME/nvim"
-  link_file ~/.vimrc "$XDG_CONFIG_HOME/nvim/init.vim"
-  link_file ~/.vim vim/snippets
+  link_file ~/init.toml "$VIM_CONFIG_HOME/init.toml"
+  link_file ~/myspacevim.vim "$XDG_CONFIG_HOME/autoload/myspacevim.vim"
 }
 
-install_apps () {
-  info 'installing apps...'
-  #
-  # Homebrew
-  #
-  # This installs some of the common dependencies needed (or at least desired)
-  # using Homebrew.
-
-  # Check for Homebrew
+install_brew () {
   if test ! $(which brew)
   then
     echo "  Installing Homebrew for you."
@@ -284,132 +246,50 @@ install_apps () {
     # Upgrade any already-installed formulae
     brew upgrade
   fi
+}
 
-  # Install native apps
-  brew install caskroom/cask/brew-cask
-  brew tap caskroom/versions
+install_packages () {
+  info 'installing packages...'
 
-  # daily
-  brew cask install amethyst
-  brew cask install alfred
-  brew cask install dropbox
-  brew cask install skype
-
-  # dev
-  brew cask install iterm2-nightly
-  # brew cask install iterm2
-  brew cask install virtualbox
-  brew cask install imagealpha
-  brew cask install imageoptim
-  brew cask install sourcetree
-  brew cask install hipchat
-  brew cask install robomongo
-
-  # browsers
-  brew cask install google-chrome
-  brew cask install google-chrome-canary
-  brew cask install firefoxdeveloperedition
-  brew cask install firefox
-  brew cask install torbrowser
-
-  # fun
-  brew cask install vlc
-  brew cask install spotify
-  brew cask install kindle
-  brew cask install steam
-  brew tap caskroom/fonts
-  brew cask install font-hack
-
-  # Install homebrew packages
-
-  # GNU core utilities (those that come with OS X are outdated)
-  # Don’t forget to add `$(brew --prefix coreutils)/libexec/gnubin` to `$PATH`.
-  brew install coreutils
-  # brew install moreutils
-  # GNU `find`, `locate`, `updatedb`, and `xargs`, `g`-prefixed
-  brew install findutils
-  # GNU `sed`, overwriting the built-in `sed`
-  brew install gnu-sed --with-default-names
-
-  # utils
-  # Install wget with IRI support
-  brew install wget --enable-iri
-  brew install jq
-  brew install zsh
-
-  brew install tree
-  brew install todo-txt
-  brew install fpp;
-
-  # install tmux
-  # temporary until tmux mac with true color
-  brew install https://raw.githubusercontent.com/choppsv1/homebrew-term24/master/tmux.rb
-  # brew install tmux
-  git_clone https://github.com/tmux-plugins/tpm ~/.tmux/plugins/tpm # install tmux plugin
-
-  # install improve search
-  brew install the_platinum_searcher
-  brew install the_silver_searcher
-
-  # install nice to have
-  brew install python
-  brew install python3
-  brew install lua
+  cat brew/brew_list | while read PACKAGE
+  do
+    # echo "brew install $PACKAGE"
+    brew install $PACKAGE
+  done
 
   # install nodejs
   curl -o- https://raw.githubusercontent.com/creationix/nvm/v0.31.0/install.sh | bash
   export NVM_DIR=~/.nvm
   nvm install node
+}
 
-  # Install clojure
-  brew cask install java
-  brew install leiningen
-  # curl -L http://smartcd.org/install | bash
+install_apps () {
+  info 'installing apps...'
 
-  # editors
-  brew cask install sublime-text
-
-  setup_spaceemacs
-  setup_vim
-  setup_karabiner
-
-  # Remove outdated versions from the cellar
-  brew cleanup
+  cat brew/cask_list | while read APP
+  do
+    # echo "brew install $APP"
+    brew install $APP
+  done
 }
 
 setup_zsh () {
   # install prezto
-
-  info 'setup zprezto'
-  git_clone https://github.com/Fetz/prezto.git "${ZDOTDIR:-$HOME}/.zprezto"
-
-  for src in $(find "${ZDOTDIR:-$HOME}/.zprezto/runcoms" -type f ! -name '*.md')
-  do
-      file=$(basename $src)
-      link_file "$src" "${ZDOTDIR:-$HOME}/.${file:t}"
-  done
+  info 'setup zsh and zplug'
 
   echo 'change default shell to zsh'
-  chsh -s /bin/zsh
+
+  # echo '/usr/local/bin/zsh' >> /etc/shells
+
+  chsh -s /usr/local/bin/zsh
+
+  curl -sL --proto-redir -all,https https://raw.githubusercontent.com/zplug/installer/master/installer.zsh | zsh
 }
 
-
-setup_karabiner () {
-  info 'setup karabiner'
-
-  # karabiner
-  brew cask install karabiner
-  brew cask install seil
-
-  local overwrite_all=true backup_all=false skip_all=false
-  link_file karabiner/private.xml /Applications/Karabiner.app/Contents/Resources/private.xml
-
-  info 'change key 80 in seils'
-  open 'https://pqrs.org/osx/karabiner/faq.html.en#exchange-caps-lock-and-delete'
-}
-
-setup_xcode
-setup_gitconfig
+install_brew
+install_packages
 install_apps
+setup_gitconfig
 install_dotfiles
+setup_vim
 setup_zsh
