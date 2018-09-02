@@ -1,5 +1,7 @@
 # Zsh
 
+<img width="1440" alt="screen shot 2018-09-02 at 21 57 49" src="https://user-images.githubusercontent.com/1071113/44960656-4310d100-aefb-11e8-98af-d2c0895cb7cf.png">
+
 ## package manager
 I'm currently using zplug to download for zsh utils and plugins
 
