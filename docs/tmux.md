@@ -2,6 +2,8 @@
 
 I'm using Tmux with [Tmux plugins](https://github.com/tmux-plugins/tpm) + a simplified airline tmux theme.
 
+<img width="1440" alt="screen shot 2018-09-02 at 21 57 49" src="https://user-images.githubusercontent.com/1071113/44960656-4310d100-aefb-11e8-98af-d2c0895cb7cf.png">
+
 ## Tmux plugins used
 
 - [tmux-plugins/tmux-sensible](https://github.com/tmux-plugins/tmux-sensible)
