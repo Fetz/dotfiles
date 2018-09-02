@@ -13,7 +13,7 @@
                        ░            ░
 ```
 
-<img width="1436" alt="screen shot 2016-05-12 at 02 16 21" src="https://cloud.githubusercontent.com/assets/1071113/15201365/3099f0da-17e8-11e6-9fda-e43010fe6705.png">
+<img width="1436" alt="screen shot 2016-05-12 at 02 16 21" src="https://user-images.githubusercontent.com/1071113/44960592-49527d80-aefa-11e8-9516-cf20282c8d85.png">
 
 ## About
 inspired by dotfiles from:
@@ -51,7 +51,6 @@ Use at your own risk!
 
 ## TODO
 - [ ] Improve readme with shortcuts and explanations of plugins and tools used
-- [ ] Add pictures with the look and feel of the tmux + nvim (SpaceVim)
 
 ## License
 
