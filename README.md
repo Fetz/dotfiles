@@ -1,5 +1,5 @@
 # FETZ's dotfiles
-[About](#about) &nbsp;|&nbsp; [What's inside](#whats-inside) &nbsp;|&nbsp; [Docs](#docs) &nbsp;|&nbsp; [Installation](#installation) &nbsp;|&nbsp;  [TODO](#TODO)|&nbsp;  [License](#license)
+[About](#about) &nbsp;|&nbsp; [What's inside](#whats-inside) &nbsp;|&nbsp; [Docs](#docs) &nbsp;|&nbsp; [Installation](#installation) &nbsp;|&nbsp; [TODO](#TODO)&nbsp;|&nbsp; [License](#license)
 ```
   █████▒▓█████▄▄▄█████▓▒███████▒   ▓█████▄  ▒█████  ▄▄▄█████▓  █████▒██▓ ██▓    ▓█████   ██████
 ▓██   ▒ ▓█   ▀▓  ██▒ ▓▒▒ ▒ ▒ ▄▀░   ▒██▀ ██▌▒██▒  ██▒▓  ██▒ ▓▒▓██   ▒▓██▒▓██▒    ▓█   ▀ ▒██    ▒
@@ -22,30 +22,22 @@ inspired by dotfiles from:
 - and probably others
 
 ## What's inside
-- true color terminal (nvim/tmux/iterm)
-- setup git to use both ssh and https github token
+- tmux, nvim, vim with spacevim
+- setup git to use ssh and add 2 different configs, one for work and another personal
 - brew/cask to install some apps and libs needed
-- vim/neovim dotfile
-  - plug - plugin manager
-  - gruvbox - theme
-  - vim leader guide - similar to whick key / guide key
-- tmux
-  - theme_airline
-  - tmux plugin
-    - fpp
-    - yank
-    - copycat
-    - sensible
-- spacemacs dotfile
-- zsh (pretzo)
-- Amethyst tiling window manager ala xmonad and i3
+- tmux with plugins
+- zsh with zplug plugins
 
 ## Docs
-- keyboard:
-  - [internal keyboard config](docs/karabiner.md)
-  - [infinity ergodox](docs/infinity.md)
-- [vim](docs/vim.md)
+- [apps](docs/apps.md)
+- [cli](docs/cli.md)
+- [git](docs/git.md)
+- [infinity ergodox](docs/infinity.md) keyboard config
+- [iterm2](docs/iterm.md)
 - [tmux](docs/tmux.md)
+- [vim](docs/vim.md)
+- [zsh](docs/zsh.md)
+
 
 ## Installation
 
@@ -58,18 +50,8 @@ $ sh dotfiles/fetz/bootstrap.sh
 Use at your own risk!
 
 ## TODO
-- [ ] zsh
-  - [ ] find a better way to visualize normal/insert mode swap, that doesn't cause char issues in tmux and vim/emacs
-  - [ ] set slc registry with a public/private npm swap
-  - [ ] improve how docker is handled, check docker mac osx native app
-- [ ] vim/neovim
-  -  [ ] improve guide key like file search and such
-  -  [ ] editor lint is not yet working
-  -  [ ] improve ternjs with react (jsx) and babel
-  -  [ ] add a way to swap or open test next to the main file
-- [ ] spacemacs
-  - [ ] improve js/react highlight
-  - [ ] find a way to force jsx in some js files
+- [ ] Improve readme with shortcuts and explanations of plugins and tools used
+- [ ] Add pictures with the look and feel of the tmux + nvim (SpaceVim)
 
 ## License
 

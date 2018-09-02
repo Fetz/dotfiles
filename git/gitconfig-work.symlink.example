@@ -1,0 +1,7 @@
+[user]
+  name = AUTHORNAME
+  email = AUTHOREMAIL
+  signingkey = SIGN_KEY
+
+[commit]
+  gpgsign = USE_GPG
