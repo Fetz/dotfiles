@@ -85,7 +85,7 @@ Tmux modifier prefix `CTRL-a`
 ### Plugins
 - `CTRL-a I` install tmux plugins
 
-#### Copy-cat + Yank
+#### Copy-cat + Yank
 - `<select-a-text> y` copy the selected text
 - `<select-a-text> Y` copy & paste the selected text on the pane
 - `CTRL-a /` search for some text/regex
