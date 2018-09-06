@@ -166,7 +166,7 @@ setup_gitconfig () {
 
     info 'allow to use ssh with github'
     ssh-keygen -t rsa -b 4096 -C $authoremail
-    ssh-add ~/.ssh/id_rsa
+    ssh-add -K ~/.ssh/id_rsa
     pbcopy < ~/.ssh/id_rsa.pub
 
     info 'public key is in clipboard, add ssh key to github'
